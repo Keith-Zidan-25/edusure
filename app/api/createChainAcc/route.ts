@@ -21,11 +21,11 @@ export async function GET() {
         }
     
         console.log(`Created new account with ID: ${newAccountId}`);
-        return {
+        return NextResponse.json({
             accountId: newAccountId.toString(),
             privateKey: newPrivateKey.toStringDer(),
             publicKey: newPublicKey.toStringDer()
-        };
+        });
 
     } catch (error) {
         return NextResponse.json({ message: "Error creating Hedera account", error }, { status: 500 });

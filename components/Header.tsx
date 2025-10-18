@@ -1,105 +1,73 @@
-"use client";
+import { GraduationCap } from "lucide-react";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+interface NavLink {
+  href: string;
+  label: string;
+}
 
-const Header = () => {
-  const router = useRouter();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+interface HeaderProps {
+  logo?: string;
+  navLinks?: NavLink[];
+  languages?: string[];
+  onSignIn?: () => void;
+  onGetStarted?: () => void;
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: "Home", href: "#home" },
-    { name: "Features", href: "#features" },
-    { name: "Pricing", href: "#pricing" },
-    { name: "Contact", href: "#contact" },
-  ];
-
+export default function Header({
+  navLinks = [
+    { href: '#home', label: 'Home' },
+    { href: '#features', label: 'Features' },
+    { href: '#pricing', label: 'Pricing' },
+    { href: '#about', label: 'About Us' }
+  ],
+  languages = ['English', 'Spanish', 'French'],
+  onSignIn,
+  onGetStarted
+}: HeaderProps) {
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-card/80 backdrop-blur-lg border-b border-border shadow-sm"
-          : "bg-transparent"
-      }`}
-    >
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <a href="#home" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-primary" />
-              <span className="text-xl font-bold text-foreground">EduSure</span>
-            </a>
+    <header className="bg-white shadow-sm">
+      <nav className="container mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <GraduationCap className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold text-gray-900">EduSure</span>
           </div>
-
-          {/* Desktop Navigation */}
+          
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <a
-                key={link.name}
+                key={link.href}
                 href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium"
+                className="text-gray-700 hover:text-blue-600 transition"
               >
-                {link.name}
+                {link.label}
               </a>
             ))}
           </div>
-
-          {/* Desktop CTA Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => router.push('/login')}>Sign In</Button>
-            <Button variant="hero" onClick={() => router.push('/login')}>Sign Up</Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-foreground"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 animate-fade-in">
-            <div className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </a>
+          
+          <div className="flex items-center space-x-4">
+            <select className="text-gray-700 border-none bg-transparent cursor-pointer">
+              {languages.map((lang) => (
+                <option key={lang}>{lang}</option>
               ))}
-              <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-                <Button variant="ghost" className="w-full">
-                  Sign In
-                </Button>
-                <Button variant="hero" className="w-full">
-                  Sign Up
-                </Button>
-              </div>
-            </div>
+            </select>
+            <button
+              onClick={onSignIn}
+              className="text-gray-700 hover:text-blue-600 transition"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={onGetStarted}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Get Started
+            </button>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   );
 };
-
-export default Header;
