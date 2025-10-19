@@ -94,99 +94,96 @@ export default function SignUpForm ({
 
     return (
         <div className="p-8 flex flex-col justify-center max-w-md mx-auto">
-        <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Join EduSure Today!</h2>
-            <p className="text-gray-600">
-            Your secure gateway to verifiable credentials and a decentralized learning future.
+            <div className="mb-8">
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">Join EduSure Today!</h2>
+                <p className="text-gray-600">
+                Your secure gateway to verifiable credentials and a decentralized learning future.
+                </p>
+            </div>
+
+            <div className="space-y-3 mb-6">
+                <SocialButton provider="google" onClick={onGoogleSignUp} />
+                <SocialButton provider="linkedin" onClick={onLinkedInSignUp} />
+            </div>
+
+            <div className="flex items-center my-6">
+                <div className="flex-1 border-t border-gray-300"></div>
+                <span className="px-4 text-sm text-gray-500">OR CONTINUE WITH</span>
+                <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            <div className="space-y-4">
+                <div>
+                    <input
+                        type="email"
+                        placeholder="Email Address"
+                        value={formData.email}
+                        onChange={(e) => handleChange('email', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+
+                <div className="relative">
+                    <input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={(e) => handleChange('password', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    >
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                </div>
+
+                <div className="relative">
+                    <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        placeholder="Confirm Password"
+                        value={formData.confirmPassword}
+                        onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    >
+                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                </div>
+
+                <div className="flex items-center">
+                    <input
+                        type="checkbox"
+                        id="enable2FA"
+                        checked={formData.enable2FA}
+                        onChange={(e) => handleChange('enable2FA', e.target.checked)}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="enable2FA" className="ml-2 text-sm text-gray-700 cursor-pointer">
+                        Enable Two-Factor Authentication
+                    </label>
+                </div>
+
+                <button
+                    onClick={handleSubmit}
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+                >
+                    Register Now
+                </button>
+            </div>
+
+            <p className="mt-6 text-center text-gray-600">
+                Already have an account?{' '}
+                <button onClick={onSignIn} className="text-blue-600 hover:text-blue-700 font-semibold">
+                    Sign In
+                </button>
             </p>
-        </div>
-
-        {/* Social Sign Up Buttons */}
-        <div className="space-y-3 mb-6">
-            <SocialButton provider="google" onClick={onGoogleSignUp} />
-            <SocialButton provider="linkedin" onClick={onLinkedInSignUp} />
-        </div>
-
-        {/* Divider */}
-        <div className="flex items-center my-6">
-            <div className="flex-1 border-t border-gray-300"></div>
-            <span className="px-4 text-sm text-gray-500">OR CONTINUE WITH</span>
-            <div className="flex-1 border-t border-gray-300"></div>
-        </div>
-
-        {/* Form Fields */}
-        <div className="space-y-4">
-            <div>
-            <input
-                type="email"
-                placeholder="Email Address"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            </div>
-
-            <div className="relative">
-            <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
-                value={formData.password}
-                onChange={(e) => handleChange('password', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-            >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </button>
-            </div>
-
-            <div className="relative">
-            <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-            >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </button>
-            </div>
-
-            <div className="flex items-center">
-            <input
-                type="checkbox"
-                id="enable2FA"
-                checked={formData.enable2FA}
-                onChange={(e) => handleChange('enable2FA', e.target.checked)}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <label htmlFor="enable2FA" className="ml-2 text-sm text-gray-700 cursor-pointer">
-                Enable Two-Factor Authentication
-            </label>
-            </div>
-
-            <button
-            onClick={handleSubmit}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
-            >
-            Register Now
-            </button>
-        </div>
-
-        <p className="mt-6 text-center text-gray-600">
-            Already have an account?{' '}
-            <button onClick={onSignIn} className="text-blue-600 hover:text-blue-700 font-semibold">
-            Sign In
-            </button>
-        </p>
         </div>
     );
 };

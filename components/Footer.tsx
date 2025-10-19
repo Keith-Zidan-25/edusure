@@ -24,7 +24,6 @@ export default function Footer({
     support: [{ href: '#support', label: 'Support' }]
   },
   socialLinks = {},
-  brandText = 'Visily'
 }: FooterProps) {
   const allLinks = [...(links.company || []), ...(links.legal || []), ...(links.support || [])];
   

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Shield, Users, Globe, Eye, EyeOff } from 'lucide-react';
-import Footer from '@/components/Footer';
+import React from 'react';
+import { Shield, Users, Globe } from 'lucide-react';
 import SignUpForm from '@/components/AuthForm';
+import { toast, ToastContainer } from 'react-toastify';
+import Image from 'next/image';
 
 interface SignUpFormData {
     email: string;
@@ -41,7 +42,6 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ icon, text }) => {
     );
 };
 
-// Language Selector Component
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     languages = ['English', 'Spanish', 'French', 'German'],
     defaultLanguage = 'English',
@@ -62,35 +62,34 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     );
 };
 
-// Left Panel Component
 const LeftPanel: React.FC<LeftPanelProps> = ({ title, features, imageUrl }) => {
     return (
         <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 flex flex-col justify-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-            {title}
-        </h1>
-        
-        <div className="mb-5">
-            {features.map((feature, index) => (
-            <FeatureItem key={index} icon={feature.icon} text={feature.text} />
-            ))}
-        </div>
-        
-        <div className="mt-5">
-            {imageUrl ? (
-            <img src={imageUrl} alt="Blockchain illustration" className="w-full rounded-lg" />
-            ) : (
-            <div className="w-full h-60 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 rounded-lg flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-30">
-                <div className="absolute top-10 left-10 w-20 h-20 bg-yellow-400 rounded-lg transform rotate-12"></div>
-                <div className="absolute top-20 right-20 w-16 h-16 bg-pink-400 rounded-lg transform -rotate-6"></div>
-                <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-orange-400 rounded-lg transform rotate-45"></div>
-                <div className="absolute bottom-10 right-10 w-20 h-20 bg-blue-400 rounded-lg transform -rotate-12"></div>
-                </div>
-                <div className="relative z-10 text-white text-6xl font-bold">₿</div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                {title}
+            </h1>
+            
+            <div className="mb-5">
+                {features.map((feature, index) => (
+                <FeatureItem key={index} icon={feature.icon} text={feature.text} />
+                ))}
             </div>
-            )}
-        </div>
+            
+            <div className="mt-5">
+                {imageUrl ? (
+                    <Image src={imageUrl} alt="Blockchain illustration" className="w-full rounded-lg" />
+                ) : (
+                    <div className="w-full h-60 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 rounded-lg flex items-center justify-center relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-30">
+                            <div className="absolute top-10 left-10 w-20 h-20 bg-yellow-400 rounded-lg transform rotate-12"></div>
+                            <div className="absolute top-20 right-20 w-16 h-16 bg-pink-400 rounded-lg transform -rotate-6"></div>
+                            <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-orange-400 rounded-lg transform rotate-45"></div>
+                            <div className="absolute bottom-10 right-10 w-20 h-20 bg-blue-400 rounded-lg transform -rotate-12"></div>
+                        </div>
+                        <div className="relative z-10 text-white text-6xl font-bold">₿</div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
@@ -101,11 +100,17 @@ const AuthPage: React.FC = () => {
     };
 
     const handleGoogleSignUp = () => {
-        console.log('Google sign up clicked');
+        toast('Google signin coming soon!!', {
+            autoClose: 2000,
+            type: "info"
+        });
     };
 
     const handleLinkedInSignUp = () => {
-        console.log('LinkedIn sign up clicked');
+        toast('LinkedIn signin coming soon!!', {
+            autoClose: 2000,
+            type: "info"
+        });
     };
 
     const handleSignIn = () => {
@@ -149,6 +154,7 @@ const AuthPage: React.FC = () => {
                     onSignIn={handleSignIn}
                 />
             </div>
+            <ToastContainer position="bottom-right" />
             {/* <Footer /> */}
         </div>
     );
