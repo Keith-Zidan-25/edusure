@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   User, 
   Award, 
@@ -16,6 +16,7 @@ import {
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/SignedInHeader';
 import Footer from '@/components/Footer';
+import Image from 'next/image';
 
 // TypeScript Interfaces
 interface RewardStats {
@@ -93,7 +94,7 @@ const RedemptionCard: React.FC<RedemptionCardProps> = ({ item, onRedeem }) => {
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
       <div className={`h-48 ${item.imageGradient || 'bg-gray-200'} flex items-center justify-center`}>
         {item.imageUrl ? (
-          <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+          <Image src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
         ) : (
           <div className="text-white text-center p-6">
             <BookOpen className="w-16 h-16 mx-auto mb-2" />
@@ -122,7 +123,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onEnroll }) => {
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
       <div className="h-48 bg-gray-200 overflow-hidden">
         {course.imageUrl ? (
-          <img src={course.imageUrl} alt={course.title} className="w-full h-full object-cover" />
+          <Image src={course.imageUrl} alt={course.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500"></div>
         )}
