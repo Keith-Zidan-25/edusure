@@ -28,14 +28,6 @@ interface TestimonialCardProps {
   avatar: string;
 }
 
-interface HeroSectionProps {
-  title: string;
-  subtitle: string;
-  ctaText: string;
-  onCtaClick?: () => void;
-}
-
-// Value Proposition Card Component
 const ValueCard = ({ icon: Icon, title, description }: ValueCardProps) => {
   return (
     <div className="flex flex-col items-center text-center p-6">
@@ -48,7 +40,6 @@ const ValueCard = ({ icon: Icon, title, description }: ValueCardProps) => {
   );
 };
 
-// Feature Section Component
 const FeatureSection = ({ icon: Icon, title, description, image, imageRight = false }: FeatureSectionProps) => {
   return (
     <div className={`flex flex-col ${imageRight ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 mb-20`}>
@@ -68,7 +59,6 @@ const FeatureSection = ({ icon: Icon, title, description, image, imageRight = fa
   );
 };
 
-// Testimonial Card Component
 const TestimonialCard = ({ quote, name, title, avatar }: TestimonialCardProps) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
@@ -84,7 +74,6 @@ const TestimonialCard = ({ quote, name, title, avatar }: TestimonialCardProps) =
   );
 };
 
-// Main App Component
 const App = () => {
   const router = useRouter();
 
@@ -95,7 +84,6 @@ const App = () => {
         onGetStarted={() => router.push('/auth')}
       />
       
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-20 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-72 h-72 bg-blue-400 rounded-full blur-3xl"></div>
@@ -115,7 +103,6 @@ const App = () => {
         </div>
       </section>
       
-      {/* Value Propositions */}
       <section className="container mx-auto px-6 py-20">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
           Our Core Value Propositions

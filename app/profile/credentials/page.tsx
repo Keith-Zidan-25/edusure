@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { 
   User, 
   Award, 
@@ -18,44 +18,12 @@ import Header from '@/components/SignedInHeader';
 import Sidebar from '@/components/Sidebar';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
+import { 
+	Credential, CredentialCardProps, ValidatorProps 
+} from '@/utils/types/credentials';
+import { AuthContext } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
-// TypeScript Interfaces
-interface Credential {
-  id: string;
-  title: string;
-  issuer: string;
-  date: string;
-  status: 'Verified' | 'Pending';
-  credentialId: string;
-  imageUrl?: string;
-  imageGradient?: string;
-}
-
-interface CredentialCardProps {
-  credential: Credential;
-  onView?: (id: string) => void;
-  onShare?: (id: string) => void;
-  onDownload?: (id: string) => void;
-}
-
-interface IssueCredentialFormData {
-  title: string;
-  recipientId: string;
-  issuanceDate: string;
-}
-
-interface IssueCredentialFormProps {
-  onSubmit?: (data: IssueCredentialFormData) => void;
-}
-
-
-interface ValidatorProps {
-  onValidate?: (hash: string) => void;
-  validationResult?: {
-    isValid: boolean;
-    message: string;
-  } | null;
-}
 
 interface SidebarItem {
   icon: React.ReactNode;
@@ -64,213 +32,135 @@ interface SidebarItem {
   isActive?: boolean;
 }
 
-
 const CredentialCard: React.FC<CredentialCardProps> = ({
-  credential,
-  onView,
-  onShare,
-  onDownload
+	credential,
+	onView,
+	onShare,
+	onDownload
 }) => {
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
-      <div 
-        className={`h-40 ${credential.imageGradient || 'bg-gradient-to-r from-yellow-600 to-orange-600'} flex items-center justify-center p-6`}
-      >
-        {credential.imageUrl ? (
-          <Image src={credential.imageUrl} alt={credential.title} className="w-full h-full object-cover" />
-        ) : (
-          <div className="text-white text-center">
-            <Award className="w-16 h-16 mx-auto mb-2" />
-            <p className="text-sm font-medium opacity-90">{credential.title}</p>
-          </div>
-        )}
-      </div>
-      
-      <div className="p-5">
-        <h3 className="text-lg font-bold text-gray-900 mb-2">{credential.title}</h3>
-        <p className="text-sm text-gray-600 mb-1">Issuer: {credential.issuer}</p>
-        <p className="text-sm text-gray-600 mb-1">Date: {credential.date}</p>
-        
-        <div className="flex items-center mb-3">
-          <span className="text-sm text-gray-600 mr-2">Status:</span>
-          <span className={`flex items-center space-x-1 text-sm font-medium ${
-            credential.status === 'Verified' ? 'text-green-600' : 'text-yellow-600'
-          }`}>
-            {credential.status === 'Verified' ? (
-              <CheckCircle className="w-4 h-4" />
-            ) : (
-              <Clock className="w-4 h-4" />
-            )}
-            <span>{credential.status}</span>
-          </span>
-        </div>
-        
-        <p className="text-xs text-gray-500 mb-4 font-mono break-all">
-          ID: {credential.credentialId}
-        </p>
-        
-        <div className="flex space-x-2">
-          <button
-            onClick={() => onView?.(credential.id)}
-            className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
-          >
-            <Eye className="w-4 h-4" />
-            <span>View</span>
-          </button>
-          <button
-            onClick={() => onShare?.(credential.id)}
-            className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>Share</span>
-          </button>
-          <button
-            onClick={() => onDownload?.(credential.id)}
-            className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
-          >
-            <Download className="w-4 h-4" />
-            <span>Download</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
+			<div 
+				className={`h-40 ${credential.imageGradient || 'bg-gradient-to-r from-yellow-600 to-orange-600'} flex items-center justify-center p-6`}
+			>
+				{credential.imageUrl ? (
+					<Image src={credential.imageUrl} alt={credential.title} className="w-full h-full object-cover" />
+				) : (
+					<div className="text-white text-center">
+						<Award className="w-16 h-16 mx-auto mb-2" />
+						<p className="text-sm font-medium opacity-90">{credential.title}</p>
+					</div>
+				)}
+			</div>
+		
+			<div className="p-5">
+				<h3 className="text-lg font-bold text-gray-900 mb-2">{credential.title}</h3>
+				<p className="text-sm text-gray-600 mb-1">Issuer: {credential.issuer}</p>
+				<p className="text-sm text-gray-600 mb-1">Date: {credential.date}</p>
+				
+				<div className="flex items-center mb-3">
+					<span className="text-sm text-gray-600 mr-2">Status:</span>
+					<span className={`flex items-center space-x-1 text-sm font-medium ${
+						credential.status === 'Verified' ? 'text-green-600' : 'text-yellow-600'
+					}`}>
+						{credential.status === 'Verified' ? (
+							<CheckCircle className="w-4 h-4" />
+						) : (
+							<Clock className="w-4 h-4" />
+						)}
+						<span>{credential.status}</span>
+					</span>
+				</div>
+				
+				<p className="text-xs text-gray-500 mb-4 font-mono break-all">
+					ID: {credential.credentialId}
+				</p>
+				
+				<div className="flex space-x-2">
+					<button
+						onClick={() => onView?.(credential.id)}
+						className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
+					>
+						<Eye className="w-4 h-4" />
+						<span>View</span>
+					</button>
+					<button
+						onClick={() => onShare?.(credential.id)}
+						className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
+					>
+						<Share2 className="w-4 h-4" />
+						<span>Share</span>
+					</button>
+					<button
+						onClick={() => onDownload?.(credential.id)}
+						className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
+					>
+						<Download className="w-4 h-4" />
+						<span>Download</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	);
 };
 
-const IssueCredentialForm: React.FC<IssueCredentialFormProps> = ({ onSubmit }) => {
-  const [formData, setFormData] = useState<IssueCredentialFormData>({
-    title: '',
-    recipientId: '',
-    issuanceDate: '2024-07-20'
-  });
 
-  const handleChange = (field: keyof IssueCredentialFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = () => {
-    onSubmit?.(formData);
-  };
-
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Issue New Credential</h2>
-      
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Create & Publish a Verifiable Certificate</h3>
-        <p className="text-sm text-gray-600">
-          As an authorized institution or educator, you can issue new blockchain-secured credentials. 
-          Fill in the details below to create a new tamper-proof record.
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Credential Title
-          </label>
-          <input
-            type="text"
-            placeholder="e.g., Advanced AI Ethics Course"
-            value={formData.title}
-            onChange={(e) => handleChange('title', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Recipient EduBlock ID
-          </label>
-          <input
-            type="text"
-            placeholder="e.g., 0xRecipientWalletAddress"
-            value={formData.recipientId}
-            onChange={(e) => handleChange('recipientId', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Issuance Date
-          </label>
-          <input
-            type="date"
-            value={formData.issuanceDate}
-            onChange={(e) => handleChange('issuanceDate', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center space-x-2"
-        >
-          <Award className="w-5 h-5" />
-          <span>Issue Credential</span>
-        </button>
-      </div>
-    </div>
-  );
-};
-
-// Credential Validator Component
 const CredentialValidator: React.FC<ValidatorProps> = ({ onValidate, validationResult }) => {
-  const [hash, setHash] = useState('');
+  	const [hash, setHash] = useState('');
 
-  const handleValidate = () => {
-    onValidate?.(hash);
-  };
+  	const handleValidate = () => {
+    	onValidate?.(hash);
+  	};
 
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Credential Validator</h2>
+  	return (
+    	<div className="bg-white border border-gray-200 rounded-lg p-6">
+      		<h2 className="text-2xl font-bold text-gray-900 mb-2">Credential Validator</h2>
       
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Verify Authenticity on Blockchain</h3>
-        <p className="text-sm text-gray-600">
-          Enter a credential ID or blockchain transaction hash to instantly verify its authenticity and status.
-        </p>
-      </div>
+      		<div className="mb-6">
+				<h3 className="text-lg font-semibold text-gray-900 mb-2">Verify Authenticity on Blockchain</h3>
+				<p className="text-sm text-gray-600">
+					Enter a credential ID or blockchain transaction hash to instantly verify its authenticity and status.
+				</p>
+			</div>
 
-      <div className="flex space-x-2 mb-6">
-        <input
-          type="text"
-          placeholder="Enter Credential ID or Transaction Hash"
-          value={hash}
-          onChange={(e) => setHash(e.target.value)}
-          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          onClick={handleValidate}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center space-x-2"
-        >
-          <CheckCircle className="w-5 h-5" />
-          <span>Validate</span>
-        </button>
-      </div>
+			<div className="flex space-x-2 mb-6">
+				<input
+					type="text"
+					placeholder="Enter Credential ID or Transaction Hash"
+					value={hash}
+					onChange={(e) => setHash(e.target.value)}
+					className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+				/>
+				<button
+					onClick={handleValidate}
+					className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center space-x-2"
+				>
+					<CheckCircle className="w-5 h-5" />
+					<span>Validate</span>
+				</button>
+			</div>
 
-      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-        <h4 className="font-semibold text-gray-900 mb-2">Validation Result</h4>
-        {validationResult ? (
-          <div className={`p-4 rounded-lg ${
-            validationResult.isValid ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-          }`}>
-            <p className="font-medium">{validationResult.message}</p>
-          </div>
-        ) : (
-          <p className="text-gray-500">Enter a Credential ID to validate.</p>
-        )}
-      </div>
-    </div>
-  );
+			<div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+				<h4 className="font-semibold text-gray-900 mb-2">Validation Result</h4>
+				{validationResult ? (
+					<div className={`p-4 rounded-lg ${
+						validationResult.isValid ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+					}`}>
+						<p className="font-medium">{validationResult.message}</p>
+					</div>
+				) : (
+					<p className="text-gray-500">Enter a Credential ID to validate.</p>
+				)}
+			</div>
+		</div>
+	);
 };
 
-// Main CredentialsPage Component
 const CredentialsPage: React.FC = () => {
+	const { isAuthenticated } = useContext(AuthContext);
     const [validationResult, setValidationResult] = useState<{ isValid: boolean; message: string } | null>(null);
 
+	const router = useRouter();
     const sidebarItems: SidebarItem[] = [
         { icon: <UserPlus className="w-5 h-5" />, label: 'Onboarding', href: '/profile/dashboard' },
         { icon: <Award className="w-5 h-5" />, label: 'Credentials', href: '/profile/credentials', isActive: true },
@@ -352,15 +242,15 @@ const CredentialsPage: React.FC = () => {
         console.log('Download credential:', id);
     };
 
-    const handleIssueCredential = (data: IssueCredentialFormData) => {
-        console.log('Issue credential:', data);
-    };
+    // const handleIssueCredential = (data: IssueCredentialFormData) => {
+    //     console.log('Issue credential:', data);
+    // };
 
     const handleValidate = (hash: string) => {
         console.log('Validate credential:', hash);
         setValidationResult({
-        isValid: true,
-        message: 'Credential verified successfully on the blockchain!'
+        	isValid: true,
+        	message: 'Credential verified successfully on the blockchain!'
         });
     };
 
@@ -378,6 +268,10 @@ const CredentialsPage: React.FC = () => {
         { href: '#terms', label: 'Terms' }
         ]
     };
+
+	if (!isAuthenticated) {
+		router.push('/auth');
+	}
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -400,20 +294,19 @@ const CredentialsPage: React.FC = () => {
                     <div className="grid md:grid-cols-3 gap-6 mb-12">
                         {credentials.map((credential) => (
                             <CredentialCard
-                            key={credential.id}
-                            credential={credential}
-                            onView={handleView}
-                            onShare={handleShare}
-                            onDownload={handleDownload}
+                              key={credential.id}
+                              credential={credential}
+                              onView={handleView}
+                              onShare={handleShare}
+                              onDownload={handleDownload}
                             />
                         ))}
                     </div>
 
-                    <div className="mb-12">
+                    {/* <div className="mb-12">
                         <IssueCredentialForm onSubmit={handleIssueCredential} />
-                    </div>
+                    </div> */}
 
-                    {/* Credential Validator */}
                     <CredentialValidator 
                         onValidate={handleValidate}
                         validationResult={validationResult}

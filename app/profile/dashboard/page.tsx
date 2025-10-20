@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { 
   User, 
   Award, 
@@ -15,6 +15,8 @@ import {
 import Header from '@/components/SignedInHeader';
 import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
+import { AuthContext } from '@/context/AuthContext';
+import { useRouter } from 'next/router';
 
 interface SidebarItem {
   icon: React.ReactNode;
@@ -131,7 +133,10 @@ const NextSteps: React.FC<NextStepsProps> = ({ cards }) => {
 };
 
 const Dashboard: React.FC = () => {
+  const { isAuthenticated } = useContext(AuthContext);
   const [progress] = useState(33);
+
+  const router = useRouter();
 
   const sidebarItems: SidebarItem[] = [
     { icon: <UserPlus className="w-5 h-5" />, label: 'Onboarding', href: '/profile/dashboard', isActive: true },
@@ -216,6 +221,10 @@ const Dashboard: React.FC = () => {
       { href: '#cookies', label: 'Cookie Policy' }
     ]
   };
+
+  if (!isAuthenticated) {
+    router.push("/auth");
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
