@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { 
   User, 
   Award, 
@@ -157,10 +157,10 @@ const CredentialValidator: React.FC<ValidatorProps> = ({ onValidate, validationR
 };
 
 const CredentialsPage: React.FC = () => {
-	const { isAuthenticated } = useContext(AuthContext);
+	const { isAuthenticated, loading, user } = useContext(AuthContext);
     const [validationResult, setValidationResult] = useState<{ isValid: boolean; message: string } | null>(null);
-
 	const router = useRouter();
+
     const sidebarItems: SidebarItem[] = [
         { icon: <UserPlus className="w-5 h-5" />, label: 'Onboarding', href: '/profile/dashboard' },
         { icon: <Award className="w-5 h-5" />, label: 'Credentials', href: '/profile/credentials', isActive: true },
@@ -269,9 +269,13 @@ const CredentialsPage: React.FC = () => {
         ]
     };
 
-	if (!isAuthenticated) {
-		router.push('/auth');
-	}
+	useEffect(() => {
+        if (loading) return;
+
+        if (!isAuthenticated) {
+          return router.replace(`${process.env.NEXT_PUBLIC_BASE_URL}/auth`)
+        }
+    }, [isAuthenticated, loading, router]);
 
     return (
         <div className="min-h-screen bg-gray-50">

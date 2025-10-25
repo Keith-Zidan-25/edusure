@@ -60,13 +60,14 @@ export default function SignUpForm ({
     onGoogleSignUp,
     onLinkedInSignUp,
 }: SignUpFormProps ) {
-    const [isSignIn, onSignIn] = useState<boolean>(false);
+    const [isSignIn, onSignIn] = useState<boolean>(true);
     const [formData, setFormData] = useState<SignUpFormData>({
+        username: "",
         email: '',
         password: '',
         confirmPassword: '',
         enable2FA: false,
-        isSignIn
+        isSignIn: true
     });
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -79,10 +80,14 @@ export default function SignUpForm ({
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+    const handleFormChange = () => {
+        onSignIn(!isSignIn);
+        setFormData(prev => ({ ...prev, isSignIn: !isSignIn }));
+    }
+
     return (
         <div className="p-8 flex flex-col justify-center max-w-md mx-auto">
             <div className="mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Join EduSure Today!</h2>
                 <p className="text-gray-600">
                 Your secure gateway to verifiable credentials and a decentralized learning future.
                 </p>
@@ -100,6 +105,18 @@ export default function SignUpForm ({
             </div>
 
             <div className="space-y-4">
+                {!isSignIn && (
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={formData.username}
+                            onChange={(e) => handleChange('username', e.target.value)}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                )}
+
                 <div>
                     <input
                         type="email"
@@ -171,8 +188,8 @@ export default function SignUpForm ({
 
             <p className="mt-6 text-center text-gray-600">
                 {isSignIn ? `Don't have an account?${' '}`:`Already have an account?${' '}`}
-                <button onClick={() => onSignIn(!isSignIn)} className="text-blue-600 hover:text-blue-700 font-semibold">
-                    {isSignIn ? "Sign In": "Sign Up"}
+                <button onClick={handleFormChange} className="text-blue-600 hover:text-blue-700 font-semibold">
+                    {isSignIn ? "Sign Up": "Sign In"}
                 </button>
             </p>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { 
   User, 
   Award, 
@@ -242,7 +242,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onViewCertificate }) =>
 
 // Main Portfolio Component
 const Portfolio: React.FC = () => {
-  const {isAuthenticated, user} = useContext(AuthContext);
+  const {isAuthenticated, user, loading} = useContext(AuthContext);
   const router = useRouter();
 
   const sidebarItems: SidebarItem[] = [
@@ -446,9 +446,13 @@ const Portfolio: React.FC = () => {
     ]
   };
 
-  if (!isAuthenticated) {
-    router.push("/auth")
-  }
+  useEffect(() => {
+    if (loading) return;
+    
+    if (!isAuthenticated) {
+      return router.replace(`${process.env.NEXT_PUBLIC_BASE_URL}/auth`)
+    }
+  }, [isAuthenticated, loading, router]);
 
   return (
     <div className="min-h-screen bg-gray-50">

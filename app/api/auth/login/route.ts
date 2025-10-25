@@ -6,12 +6,13 @@ await dbConnect();
 //SignIn function
 export async function POST(request: NextRequest) {
     try {
-        const {username, password} = await request.json();
+        const {email, password} = await request.json();
 
-        if (!username || !password) {
+        if (!email || !password) {
             return NextResponse.json({ message: "Username and password are required" }, { status: 400 });
         }
-        const user = await User.findOne({ username, password });
+        const user = await User.findOne({ email, password });
+        console.log(user);
         
         if (!user || !user.password === password) {
             return NextResponse.json({ message: "Invalid username or password" }, { status: 401 });

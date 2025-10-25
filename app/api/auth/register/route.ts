@@ -18,6 +18,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: "Username or email already exists" }, { status: 409 });
         }
         const { hederaAccountId, hederaPrivateKey, hederaPublicKey } = await (await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/createChainAcc`)).json();
+        console.log(hederaAccountId, hederaPrivateKey);
+        
         const newUser = new User({ username, email, password, hederaAccountId, hederaPrivateKey, hederaPublicKey });
         await newUser.save();
 

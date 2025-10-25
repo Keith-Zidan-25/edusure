@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { 
   User, 
   Award, 
@@ -16,7 +16,7 @@ import Header from '@/components/SignedInHeader';
 import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
 import { AuthContext } from '@/context/AuthContext';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { SidebarItem } from '@/utils/types/components';
 
 interface OnboardingStep {
@@ -127,9 +127,8 @@ const NextSteps: React.FC<NextStepsProps> = ({ cards }) => {
 };
 
 const Dashboard: React.FC = () => {
-  const { isAuthenticated, user } = useContext(AuthContext);
+  const { isAuthenticated, user, loading } = useContext(AuthContext);
   const [progress] = useState(33);
-
   const router = useRouter();
 
   const sidebarItems: SidebarItem[] = [
@@ -216,9 +215,14 @@ const Dashboard: React.FC = () => {
     ]
   };
 
-  if (!isAuthenticated) {
-    router.push("/auth");
-  }
+  
+    useEffect(() => {
+          if (loading) return;
+  
+          if (!isAuthenticated) {
+            return router.replace(`${process.env.NEXT_PUBLIC_BASE_URL}/auth`)
+          }
+      }, [isAuthenticated, loading, router]);
 
   return (
     <div className="min-h-screen bg-gray-50">

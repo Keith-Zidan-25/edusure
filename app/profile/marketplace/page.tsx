@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { 
   User, 
   Award, 
@@ -17,6 +17,8 @@ import Sidebar from '@/components/Sidebar';
 import Header from '@/components/SignedInHeader';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
+import { AuthContext } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 // TypeScript Interfaces
 interface RewardStats {
@@ -151,6 +153,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onEnroll }) => {
 };
 
 const MarketPlace: React.FC = () => {
+  const {isAuthenticated, user, loading} = useContext(AuthContext);
+  const router = useRouter();
+
   const sidebarItems: SidebarItem[] = [
     { icon: <UserPlus className="w-5 h-5" />, label: 'Onboarding', href: '/profile/dashboard' },
     { icon: <Award className="w-5 h-5" />, label: 'Credentials', href: '/profile/credentials' },
@@ -273,6 +278,15 @@ const MarketPlace: React.FC = () => {
       { href: '#terms', label: 'Terms' }
     ]
   };
+
+  
+  useEffect(() => {
+    if (loading) return;
+    
+    if (!isAuthenticated) {
+      return router.replace(`${process.env.NEXT_PUBLIC_BASE_URL}/auth`)
+    }
+  }, [isAuthenticated, loading, router]);
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -35,7 +35,7 @@ export function AxiosHelper() {
             if (axios.isAxiosError(error)) {
                 const status = error.response?.status;
                 const msg = error.response?.data?.error || "An error occurred";
-                console.error("Request failed:", status, msg);
+                console.log("Request failed:", status, msg);
 
                 if (status && options.redirectOnErrorCodes?.includes(status)) {
                     return redirect(`/error/${status}`);

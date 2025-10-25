@@ -4,6 +4,7 @@ export interface SignUpFormData {
   confirmPassword?: string;
   enable2FA?: boolean;
   isSignIn: boolean;
+  username?: string
 }
 
 export interface SignUpFormProps {
@@ -15,6 +16,7 @@ export interface SignUpFormProps {
 export interface TAuthContext {
   isAuthenticated: boolean,
   user: TUser | null,
+  loading: boolean,
   login: (credentials: SignUpFormData) => Promise<void>,
   register: (userData: SignUpFormData) => Promise<void>,
   logout: () => Promise<void>

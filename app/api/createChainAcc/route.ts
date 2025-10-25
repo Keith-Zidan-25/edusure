@@ -22,10 +22,10 @@ export async function GET() {
     
         console.log(`Created new account with ID: ${newAccountId}`);
         return NextResponse.json({
-            accountId: newAccountId.toString(),
-            privateKey: newPrivateKey.toStringDer(),
-            publicKey: newPublicKey.toStringDer()
-        });
+            hederaAccountId: newAccountId.toString(),
+            hederaPrivateKey: newPrivateKey.toStringDer(),
+            hederaPublicKey: newPublicKey.toStringDer()
+        }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ message: "Error creating Hedera account", error }, { status: 500 });

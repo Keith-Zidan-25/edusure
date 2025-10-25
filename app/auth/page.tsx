@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Shield, Users, Globe } from 'lucide-react';
 import SignUpForm from '@/components/AuthForm';
 import { toast, ToastContainer } from 'react-toastify';
@@ -91,7 +91,7 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ title, features, imageUrl }) => {
 };
 
 const AuthPage: React.FC = () => {
-    const { isAuthenticated, login, register } = useContext(AuthContext);
+    const { isAuthenticated, login, register, loading } = useContext(AuthContext);
     const router = useRouter();
     
     const handleFormSubmit = (data: SignUpFormData) => {
@@ -142,9 +142,13 @@ const AuthPage: React.FC = () => {
         }
     ];
 
-    if (isAuthenticated) {
-        router.push("/profile/dashboard");
-    }
+    useEffect(() => {
+        if (loading) return;
+
+        if (isAuthenticated) {
+            router.push("/profile/dashboard");
+        }
+    }, [isAuthenticated, router, loading]);
 
     return (
         <div className="min-h-screen bg-white flex flex-col p-8">
