@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { 
   User, 
   Award, 
@@ -16,6 +16,9 @@ import {
 import Sidebar from '@/components/Sidebar';
 import Footer from '@/components/Footer';
 import Header from '@/components/SignedInHeader';
+import { AuthContext } from '@/context/AuthContext';
+import { SidebarItem } from '@/utils/types/components';
+import { useRouter } from 'next/navigation';
 
 interface ProfileOverview {
   name: string;
@@ -60,13 +63,6 @@ interface Course {
   date: string;
   description: string;
   duration: string;
-}
-
-interface SidebarItem {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-  isActive?: boolean;
 }
 
 interface ProfileHeaderProps {
@@ -246,6 +242,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onViewCertificate }) =>
 
 // Main Portfolio Component
 const Portfolio: React.FC = () => {
+  const {isAuthenticated, user} = useContext(AuthContext);
+  const router = useRouter();
+
   const sidebarItems: SidebarItem[] = [
     { icon: <UserPlus className="w-5 h-5" />, label: 'Onboarding', href: '/profile/dashboard' },
     { icon: <Award className="w-5 h-5" />, label: 'Credentials', href: '/profile/credentials' },
@@ -259,12 +258,12 @@ const Portfolio: React.FC = () => {
   ];
 
   const profileData: ProfileOverview = {
-    name: 'John Doe',
+    name: user?.name,
     title: 'Student',
     university: 'EduBlock University',
     totalCredentials: 6,
     skillsEndorsed: 4,
-    walletAddress: '0xDc93FC4A8FF2...448Cc7',
+    walletAddress: user?.hederaAccountId,
     verificationStatus: 'verified'
   };
 
@@ -446,6 +445,10 @@ const Portfolio: React.FC = () => {
       { href: '#terms', label: 'Terms' }
     ]
   };
+
+  if (!isAuthenticated) {
+    router.push("/auth")
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

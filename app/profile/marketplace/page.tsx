@@ -68,7 +68,6 @@ interface CourseCardProps {
   onEnroll?: (id: string) => void;
 }
 
-// Reward Card Component
 const RewardCard: React.FC<RewardCardProps> = ({ icon, title, value, description, onViewAll }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -88,7 +87,6 @@ const RewardCard: React.FC<RewardCardProps> = ({ icon, title, value, description
   );
 };
 
-// Redemption Card Component
 const RedemptionCard: React.FC<RedemptionCardProps> = ({ item, onRedeem }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
@@ -152,7 +150,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onEnroll }) => {
   );
 };
 
-// Main MarketPlace Component
 const MarketPlace: React.FC = () => {
   const sidebarItems: SidebarItem[] = [
     { icon: <UserPlus className="w-5 h-5" />, label: 'Onboarding', href: '/profile/dashboard' },

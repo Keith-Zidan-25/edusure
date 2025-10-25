@@ -1,23 +1,10 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { SignUpFormData, SignUpFormProps } from "@/utils/types/auth";
 
 interface SocialButtonProps {
   provider: 'google' | 'linkedin';
   onClick?: () => void;
-}
-
-interface SignUpFormData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  enable2FA: boolean;
-}
-
-interface SignUpFormProps {
-  onSubmit?: (data: SignUpFormData) => void;
-  onGoogleSignUp?: () => void;
-  onLinkedInSignUp?: () => void;
-  onSignIn?: () => void;
 }
 
 const SocialButton: React.FC<SocialButtonProps> = ({ provider, onClick }) => {
@@ -72,15 +59,15 @@ export default function SignUpForm ({
     onSubmit,
     onGoogleSignUp,
     onLinkedInSignUp,
-    onSignIn
 }: SignUpFormProps ) {
+    const [isSignIn, onSignIn] = useState<boolean>(false);
     const [formData, setFormData] = useState<SignUpFormData>({
         email: '',
         password: '',
         confirmPassword: '',
-        enable2FA: false
+        enable2FA: false,
+        isSignIn
     });
-
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -140,48 +127,52 @@ export default function SignUpForm ({
                     </button>
                 </div>
 
-                <div className="relative">
-                    <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder="Confirm Password"
-                        value={formData.confirmPassword}
-                        onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                    >
-                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                </div>
+                {!isSignIn && (
+                    <div className="relative">
+                        <input
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            placeholder="Confirm Password"
+                            value={formData.confirmPassword}
+                            onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        >
+                            {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                    </div>
+                )}
 
-                <div className="flex items-center">
-                    <input
-                        type="checkbox"
-                        id="enable2FA"
-                        checked={formData.enable2FA}
-                        onChange={(e) => handleChange('enable2FA', e.target.checked)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="enable2FA" className="ml-2 text-sm text-gray-700 cursor-pointer">
-                        Enable Two-Factor Authentication
-                    </label>
-                </div>
+                {!isSignIn && (
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="enable2FA"
+                            checked={formData.enable2FA}
+                            onChange={(e) => handleChange('enable2FA', e.target.checked)}
+                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label htmlFor="enable2FA" className="ml-2 text-sm text-gray-700 cursor-pointer">
+                            Enable Two-Factor Authentication
+                        </label>
+                    </div>
+                )}
 
                 <button
                     onClick={handleSubmit}
                     className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                 >
-                    Register Now
+                    {isSignIn ? "Login In":"Register Now"}
                 </button>
             </div>
 
             <p className="mt-6 text-center text-gray-600">
-                Already have an account?{' '}
-                <button onClick={onSignIn} className="text-blue-600 hover:text-blue-700 font-semibold">
-                    Sign In
+                {isSignIn ? `Don't have an account?${' '}`:`Already have an account?${' '}`}
+                <button onClick={() => onSignIn(!isSignIn)} className="text-blue-600 hover:text-blue-700 font-semibold">
+                    {isSignIn ? "Sign In": "Sign Up"}
                 </button>
             </p>
         </div>

@@ -1,8 +1,9 @@
 import { AxiosHelper } from "@/utils/Axioshelpers"
+import { SignUpFormData } from "@/utils/types/auth";
 
 const {sendRequest} = AxiosHelper();
 
-export const loginService = async (credentials: FormData) => {
+export const loginService = async (credentials: SignUpFormData) => {
     const data = await sendRequest({
         config: {
             url: "/api/auth/login",
@@ -13,7 +14,7 @@ export const loginService = async (credentials: FormData) => {
     return data;
 }
 
-export const registerService = async (userData: FormData) => {
+export const registerService = async (userData: SignUpFormData) => {
     const data = await sendRequest({
         config: {
             url: "/api/auth/register",

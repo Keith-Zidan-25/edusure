@@ -1,17 +1,13 @@
 "use client";
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { Shield, Users, Globe } from 'lucide-react';
 import SignUpForm from '@/components/AuthForm';
 import { toast, ToastContainer } from 'react-toastify';
 import Image from 'next/image';
-
-interface SignUpFormData {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    enable2FA: boolean;
-}
+import { AuthContext } from '@/context/AuthContext';
+import { SignUpFormData } from "@/utils/types/auth";
+import { useRouter } from 'next/navigation';
 
 interface FeatureItemProps {
     icon: React.ReactNode;
@@ -95,8 +91,22 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ title, features, imageUrl }) => {
 };
 
 const AuthPage: React.FC = () => {
+    const { isAuthenticated, login, register } = useContext(AuthContext);
+    const router = useRouter();
+    
     const handleFormSubmit = (data: SignUpFormData) => {
         console.log('Form submitted:', data);
+        try {
+            if (data.isSignIn) {
+                login(data);
+            } else {
+                register(data);
+            }
+
+            router.push("/profile/dashboard");
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const handleGoogleSignUp = () => {
@@ -111,10 +121,6 @@ const AuthPage: React.FC = () => {
             autoClose: 2000,
             type: "info"
         });
-    };
-
-    const handleSignIn = () => {
-        console.log('Sign in clicked');
     };
 
     const handleLanguageChange = (language: string) => {
@@ -136,6 +142,10 @@ const AuthPage: React.FC = () => {
         }
     ];
 
+    if (isAuthenticated) {
+        router.push("/profile/dashboard");
+    }
+
     return (
         <div className="min-h-screen bg-white flex flex-col p-8">
             <div className="absolute top-6 right-6 z-10">
@@ -151,7 +161,6 @@ const AuthPage: React.FC = () => {
                     onSubmit={handleFormSubmit}
                     onGoogleSignUp={handleGoogleSignUp}
                     onLinkedInSignUp={handleLinkedInSignUp}
-                    onSignIn={handleSignIn}
                 />
             </div>
             <ToastContainer position="bottom-right" />

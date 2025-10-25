@@ -17,13 +17,7 @@ import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
 import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from 'next/router';
-
-interface SidebarItem {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-  isActive?: boolean;
-}
+import { SidebarItem } from '@/utils/types/components';
 
 interface OnboardingStep {
   id: string;
@@ -133,7 +127,7 @@ const NextSteps: React.FC<NextStepsProps> = ({ cards }) => {
 };
 
 const Dashboard: React.FC = () => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
   const [progress] = useState(33);
 
   const router = useRouter();
@@ -228,7 +222,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <Header user={{ name: user?.name, avatar: "" }}/>
       
       <div className="flex">
         <Sidebar items={sidebarItems} settingsItems={settingsItems} />
@@ -238,7 +232,7 @@ const Dashboard: React.FC = () => {
             {/* Welcome Section */}
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-8 mb-8 flex justify-between items-center">
               <div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome, Student!</h1>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome, {user?.name}</h1>
                 <p className="text-gray-600 text-lg">Your personalized onboarding journey begins here.</p>
               </div>
               <button className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition">

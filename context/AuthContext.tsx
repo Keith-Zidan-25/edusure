@@ -3,14 +3,7 @@
 import { createContext, useState, useEffect } from "react";
 import { loginService, registerService } from "@/services/auth.service";
 import { TUser } from "@/utils/types/user";
-
-interface TAuthContext {
-    isAuthenticated: boolean,
-    user: TUser | null,
-    login: (credentials: FormData) => Promise<void>,
-    register: (userData: FormData) => Promise<void>,
-    logout: () => Promise<void>
-}
+import { SignUpFormData, TAuthContext } from "@/utils/types/auth";
 
 export const AuthContext = createContext<TAuthContext>({
     isAuthenticated: false,
@@ -24,7 +17,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
     const [user, setUser] = useState<TUser | null>(null);
 
-    const login = async (credentials: FormData) => {
+    const login = async (credentials: SignUpFormData) => {
         const data = await loginService(credentials);
         
         if (data) {
@@ -33,7 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-    const register = async (userData: FormData) => {
+    const register = async (userData: SignUpFormData) => {
         const data = await registerService(userData);
         
         if (data) {
