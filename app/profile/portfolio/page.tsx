@@ -90,7 +90,6 @@ interface CourseCardProps {
   onViewCertificate?: (id: string) => void;
 }
 
-// Profile Header Component
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile, onSharePortfolio }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-8 mb-8">
@@ -147,7 +146,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile, onSharePortfolio
   );
 };
 
-// Micro-Credential Card Component
 const MicroCredentialCard: React.FC<MicroCredentialCardProps> = ({ credential, onViewDetails }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
@@ -170,7 +168,6 @@ const MicroCredentialCard: React.FC<MicroCredentialCardProps> = ({ credential, o
   );
 };
 
-// Badge Card Component
 const BadgeCard: React.FC<BadgeCardProps> = ({ badge, onViewBadge }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
@@ -194,7 +191,6 @@ const BadgeCard: React.FC<BadgeCardProps> = ({ badge, onViewBadge }) => {
   );
 };
 
-// Skill Card Component
 const SkillCard: React.FC<SkillCardProps> = ({ skill, onEndorse }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
@@ -216,7 +212,6 @@ const SkillCard: React.FC<SkillCardProps> = ({ skill, onEndorse }) => {
   );
 };
 
-// Course Card Component
 const CourseCard: React.FC<CourseCardProps> = ({ course, onViewCertificate }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
@@ -239,8 +234,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onViewCertificate }) =>
   );
 };
 
-
-// Main Portfolio Component
 const Portfolio: React.FC = () => {
   const {isAuthenticated, user, loading} = useContext(AuthContext);
   const router = useRouter();
@@ -463,10 +456,7 @@ const Portfolio: React.FC = () => {
         
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">
-            {/* Profile Header */}
             <ProfileHeader profile={profileData} onSharePortfolio={handleSharePortfolio} />
-
-            {/* Micro-Credentials Section */}
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Micro-Credentials</h2>
               <div className="grid md:grid-cols-3 gap-6">
@@ -480,7 +470,6 @@ const Portfolio: React.FC = () => {
               </div>
             </section>
 
-            {/* Badges Section */}
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Badges</h2>
               <div className="grid md:grid-cols-3 gap-6">
@@ -494,7 +483,6 @@ const Portfolio: React.FC = () => {
               </div>
             </section>
 
-            {/* Skills Section */}
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Skills</h2>
               <div className="grid md:grid-cols-2 gap-6">
@@ -508,7 +496,6 @@ const Portfolio: React.FC = () => {
               </div>
             </section>
 
-            {/* MOOCs & Workshops Section */}
             <section>
               <h2 className="text-2xl font-bold text-gray-900 mb-6">MOOCs & Workshops</h2>
               <div className="grid md:grid-cols-2 gap-6">
@@ -523,8 +510,7 @@ const Portfolio: React.FC = () => {
             </section>
           </div>
         </main>
-      </div>
-      
+      </div>      
       <Footer links={footerLinks} socialLinks={{ facebook: '#', twitter: '#', linkedin: '#' }} />
     </div>
   );

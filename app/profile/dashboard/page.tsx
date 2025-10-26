@@ -19,15 +19,15 @@ import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { SidebarItem } from '@/utils/types/components';
 
-interface OnboardingStep {
-  id: string;
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  buttonText: string;
-  onClick?: () => void;
-  completed?: boolean;
-}
+// interface OnboardingStep {
+//   id: string;
+//   icon: React.ReactNode;
+//   title: string;
+//   description: string;
+//   buttonText: string;
+//   onClick?: () => void;
+//   completed?: boolean;
+// }
 
 interface NextStepCard {
   icon: React.ReactNode;
@@ -41,9 +41,9 @@ interface ProgressBarProps {
   steps: Array<{ label: string; completed: boolean }>;
 }
 
-interface OnboardingSectionProps {
-  steps: OnboardingStep[];
-}
+// interface OnboardingSectionProps {
+//   steps: OnboardingStep[];
+// }
 
 interface NextStepsProps {
   cards: NextStepCard[];
@@ -77,27 +77,27 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress, steps }) => {
   );
 };
 
-const OnboardingSection: React.FC<OnboardingSectionProps> = ({ steps }) => {
-  return (
-    <div className="grid md:grid-cols-3 gap-6">
-      {steps.map((step) => (
-        <div key={step.id} className="bg-white border border-gray-200 rounded-lg p-6">
-          <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
-            {step.icon}
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
-          <p className="text-gray-600 text-sm mb-6">{step.description}</p>
-          <button
-            onClick={step.onClick}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
-          >
-            {step.buttonText}
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-};
+// const OnboardingSection: React.FC<OnboardingSectionProps> = ({ steps }) => {
+//   return (
+//     <div className="grid md:grid-cols-3 gap-6">
+//       {steps.map((step) => (
+//         <div key={step.id} className="bg-white border border-gray-200 rounded-lg p-6">
+//           <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+//             {step.icon}
+//           </div>
+//           <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
+//           <p className="text-gray-600 text-sm mb-6">{step.description}</p>
+//           <button
+//             onClick={step.onClick}
+//             className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+//           >
+//             {step.buttonText}
+//           </button>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
 
 const NextSteps: React.FC<NextStepsProps> = ({ cards }) => {
   return (
@@ -128,7 +128,7 @@ const NextSteps: React.FC<NextStepsProps> = ({ cards }) => {
 
 const Dashboard: React.FC = () => {
   const { isAuthenticated, user, loading } = useContext(AuthContext);
-  const [progress] = useState(33);
+  const [progress] = useState(100);
   const router = useRouter();
 
   const sidebarItems: SidebarItem[] = [
@@ -145,36 +145,36 @@ const Dashboard: React.FC = () => {
 
   const progressSteps = [
     { label: 'Profile Setup', completed: true },
-    { label: 'Identity Verification', completed: false },
-    { label: 'Wallet Connection', completed: false }
+    { label: 'Identity Verification', completed: true },
+    { label: 'Wallet Connection', completed: true }
   ];
 
-  const onboardingSteps: OnboardingStep[] = [
-    {
-      id: 'profile',
-      icon: <UserPlus className="w-6 h-6 text-blue-600" />,
-      title: 'Complete Your Profile',
-      description: 'Personalize your EduBlock experience by adding your academic history and professional details.',
-      buttonText: 'Start Setup',
-      onClick: () => console.log('Start profile setup')
-    },
-    {
-      id: 'verify',
-      icon: <Shield className="w-6 h-6 text-blue-600" />,
-      title: 'Verify Your Identity',
-      description: 'Secure your account and unlock advanced features by completing our identity verification process.',
-      buttonText: 'Verify Now',
-      onClick: () => console.log('Start verification')
-    },
-    {
-      id: 'wallet',
-      icon: <CreditCard className="w-6 h-6 text-blue-600" />,
-      title: 'Connect Your Wallet',
-      description: 'Link your blockchain wallet to manage credentials and participate in the tokenized ecosystem.',
-      buttonText: 'Connect Wallet',
-      onClick: () => console.log('Connect wallet')
-    }
-  ];
+  // const onboardingSteps: OnboardingStep[] = [
+  //   {
+  //     id: 'profile',
+  //     icon: <UserPlus className="w-6 h-6 text-blue-600" />,
+  //     title: 'Complete Your Profile',
+  //     description: 'Personalize your EduBlock experience by adding your academic history and professional details.',
+  //     buttonText: 'Start Setup',
+  //     onClick: () => console.log('Start profile setup')
+  //   },
+  //   {
+  //     id: 'verify',
+  //     icon: <Shield className="w-6 h-6 text-blue-600" />,
+  //     title: 'Verify Your Identity',
+  //     description: 'Secure your account and unlock advanced features by completing our identity verification process.',
+  //     buttonText: 'Verify Now',
+  //     onClick: () => console.log('Start verification')
+  //   },
+  //   {
+  //     id: 'wallet',
+  //     icon: <CreditCard className="w-6 h-6 text-blue-600" />,
+  //     title: 'Connect Your Wallet',
+  //     description: 'Link your blockchain wallet to manage credentials and participate in the tokenized ecosystem.',
+  //     buttonText: 'Connect Wallet',
+  //     onClick: () => console.log('Connect wallet')
+  //   }
+  // ];
 
   const nextStepsCards: NextStepCard[] = [
     {
@@ -215,14 +215,13 @@ const Dashboard: React.FC = () => {
     ]
   };
 
-  
-    useEffect(() => {
-          if (loading) return;
-  
-          if (!isAuthenticated) {
-            return router.replace(`${process.env.NEXT_PUBLIC_BASE_URL}/auth`)
-          }
-      }, [isAuthenticated, loading, router]);
+  useEffect(() => {
+    if (loading) return;
+
+    if (!isAuthenticated) {
+      return router.replace(`${process.env.NEXT_PUBLIC_BASE_URL}/auth`)
+    }
+  }, [isAuthenticated, loading, router]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -233,7 +232,6 @@ const Dashboard: React.FC = () => {
         
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">
-            {/* Welcome Section */}
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-8 mb-8 flex justify-between items-center">
               <div>
                 <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome, {user?.name}</h1>
@@ -244,18 +242,13 @@ const Dashboard: React.FC = () => {
               </button>
             </div>
 
-            {/* Onboarding Progress */}
             <div className="bg-white rounded-lg p-8 mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Onboarding Progress</h2>
               <p className="text-gray-600 mb-6">Complete the steps below to unlock full EduBlock features.</p>
-              
               <ProgressBar progress={progress} steps={progressSteps} />
             </div>
 
-            {/* Onboarding Steps */}
-            <OnboardingSection steps={onboardingSteps} />
-
-            {/* Next Steps */}
+            {/* <OnboardingSection steps={onboardingSteps} /> */}
             <NextSteps cards={nextStepsCards} />
           </div>
         </main>

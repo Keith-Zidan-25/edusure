@@ -254,7 +254,6 @@ const getErrorConfig = (
   return configs[errorType];
 };
 
-// Main Error Page Component
 const ErrorPage: React.FC<ErrorPageProps> = ({
   errorType,
   onGoHome = () => window.location.href = '/',
@@ -269,7 +268,6 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-6">
       <div className="max-w-2xl w-full">
-        {/* Error Icon and Code */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
             {config.icon}
@@ -281,7 +279,6 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
           </div>
         </div>
 
-        {/* Error Content */}
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
           <h1 className="text-3xl font-bold text-gray-900 text-center mb-4">
             {config.title}
@@ -310,7 +307,6 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
             )}
           </div>
 
-          {/* Suggestions */}
           <div className="border-t border-gray-200 pt-6">
             <div className="flex items-center space-x-2 mb-4">
               <HelpCircle className="w-5 h-5 text-gray-500" />
@@ -329,7 +325,6 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
           </div>
         </div>
 
-        {/* Additional Help */}
         <div className="text-center">
           <p className="text-gray-600 mb-4">Still need help?</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -354,50 +349,4 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   );
 };
 
-// Demo Component showing different error types
-const App: React.FC = () => {
-  const [currentError, setCurrentError] = React.useState<ErrorPageProps['errorType']>('404');
-
-  const errorTypes: Array<{ value: ErrorPageProps['errorType']; label: string }> = [
-    { value: '400', label: '400 - Bad Request' },
-    { value: '401', label: '401 - Unauthorized' },
-    { value: '403', label: '403 - Forbidden' },
-    { value: '404', label: '404 - Not Found' },
-    { value: '408', label: '408 - Timeout' },
-    { value: '429', label: '429 - Too Many Requests' },
-    { value: '500', label: '500 - Server Error' },
-    { value: '502', label: '502 - Bad Gateway' },
-    { value: '503', label: '503 - Service Unavailable' },
-    { value: 'network', label: 'Network Error' }
-  ];
-
-  return (
-    <div>
-      {/* Demo Error Type Selector */}
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-        <select
-          value={currentError}
-          onChange={(e) => setCurrentError(e.target.value as ErrorPageProps['errorType'])}
-          className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {errorTypes.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Error Page */}
-      <ErrorPage
-        errorType={currentError}
-        onGoHome={() => console.log('Navigate to home')}
-        onGoBack={() => console.log('Go back')}
-        onRetry={() => console.log('Retry request')}
-        onContactSupport={() => console.log('Contact support')}
-      />
-    </div>
-  );
-};
-
-export default App;
+export default ErrorPage;

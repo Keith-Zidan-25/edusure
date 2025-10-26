@@ -290,14 +290,13 @@ const MarketPlace: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <Header user={{ name: user?.name, avatar: "" }}/>
       
       <div className="flex">
         <Sidebar items={sidebarItems} settingsItems={settingsItems} />
         
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">
-            {/* Header Section */}
             <div className="mb-8">
               <h1 className="text-4xl font-bold text-gray-900 mb-3">Learning and Incentives</h1>
               <p className="text-gray-600">
@@ -305,7 +304,6 @@ const MarketPlace: React.FC = () => {
               </p>
             </div>
 
-            {/* My Rewards Section */}
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">My Rewards</h2>
               <div className="grid md:grid-cols-3 gap-6">
@@ -333,7 +331,6 @@ const MarketPlace: React.FC = () => {
               </div>
             </section>
 
-            {/* Redemption Center */}
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Redemption Center</h2>
               <div className="grid md:grid-cols-4 gap-6">
@@ -347,7 +344,6 @@ const MarketPlace: React.FC = () => {
               </div>
             </section>
 
-            {/* Decentralized Course Marketplace */}
             <section>
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Decentralized Course Marketplace</h2>
               <div className="grid md:grid-cols-3 gap-6">

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/database";
 import { AccountId } from "@hashgraph/sdk";
 import { User } from "@/model/User";
+import { Credential } from "@/utils/types/credentials";
 import moment from "moment";
 
 interface NFTInfo {
@@ -14,39 +15,22 @@ interface NFTInfo {
     spender_id: string | null;
 }
 
-interface Credential {
-    id: number;
-    title: string;
-    date: string;
-    issuer: string;
-    type: string;
-    verified: boolean;
-    url: string;
-    hash: string;
-}
-
 async function dataCleaner(nftInfos: NFTInfo[]) {
     const cleanedData: Credential[] = [];
-    let count = 1;
     for (const nftInfo of nftInfos) {
         const temp = {
-            id: count++,
             title: "",
             issuer: "",
             date: "",
             type: "Certificate",
             verified: true,
-            url: '',
-            hash: nftInfo.metadata
+            imageUrl: Buffer.from(nftInfo.metadata, "base64").toString("utf8"),
+            hash: nftInfo.metadata,
+            status: "Verified",
+            credentialId: `${nftInfo.token_id}\\${nftInfo.serial_number}`
         };
         if (nftInfo.hasOwnProperty("created_timestamp")) {
             temp["date"] = moment.unix(parseInt(nftInfo["created_timestamp"].split(".")[0])).format("DD MM YYYY");
-        }
-
-        if (nftInfo.hasOwnProperty("metadata")) {
-            const metadataHex = nftInfo["metadata"];
-            const metadataString = Buffer.from(metadataHex, "hex").toString("utf8");
-            temp["url"] = metadataString;
         }
 
         if (nftInfo.hasOwnProperty("token_id")) {
@@ -84,11 +68,10 @@ async function getNftInfo(accountId: string | AccountId) {
     return nftInfos;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: { userId: string }}) {
     try {
         await dbConnect();
-
-        const userId = request.nextUrl.searchParams.get("userId");
+        const { userId } = await params;
         
         if (!userId) {
             return NextResponse.json({ message: "User ID is required" }, { status: 400 });
@@ -100,7 +83,8 @@ export async function GET(request: NextRequest) {
         }
         const nftInfos = await getNftInfo(user.hederaAccountId);
         const cleanedNftInfos = await dataCleaner(nftInfos);
-        return NextResponse.json({ message: "NFTs retrieved successfully", nfts: cleanedNftInfos }, { status: 200 })
+        
+        return NextResponse.json({ message: "NFTs retrieved successfully", nfts: cleanedNftInfos }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ message: "Error retrieving NFTs", error }, { status: 500 });
     }

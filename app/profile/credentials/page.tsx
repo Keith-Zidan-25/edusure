@@ -23,6 +23,7 @@ import {
 } from '@/utils/types/credentials';
 import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { fetchCredentials } from '@/services/credentials.service';
 
 
 interface SidebarItem {
@@ -41,10 +42,10 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
 	return (
 		<div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
 			<div 
-				className={`h-40 ${credential.imageGradient || 'bg-gradient-to-r from-yellow-600 to-orange-600'} flex items-center justify-center p-6`}
+				className={`h-40 ${credential.imageGradient || 'bg-gradient-to-r from-yellow-600 to-orange-600'} flex items-center justify-center`}
 			>
 				{credential.imageUrl ? (
-					<Image src={credential.imageUrl} alt={credential.title} className="w-full h-full object-cover" />
+					<Image src={credential.imageUrl} alt={credential.title} width={300} height={300} objectFit='cover' className="w-full h-full object-cover" />
 				) : (
 					<div className="text-white text-center">
 						<Award className="w-16 h-16 mx-auto mb-2" />
@@ -78,21 +79,21 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
 				
 				<div className="flex space-x-2">
 					<button
-						onClick={() => onView?.(credential.id)}
+						onClick={() => onView?.(credential.credentialId)}
 						className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
 					>
 						<Eye className="w-4 h-4" />
 						<span>View</span>
 					</button>
 					<button
-						onClick={() => onShare?.(credential.id)}
+						onClick={() => onShare?.(credential.credentialId)}
 						className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
 					>
 						<Share2 className="w-4 h-4" />
 						<span>Share</span>
 					</button>
 					<button
-						onClick={() => onDownload?.(credential.id)}
+						onClick={() => onDownload?.(credential.credentialId)}
 						className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition text-sm font-medium"
 					>
 						<Download className="w-4 h-4" />
@@ -159,6 +160,7 @@ const CredentialValidator: React.FC<ValidatorProps> = ({ onValidate, validationR
 const CredentialsPage: React.FC = () => {
 	const { isAuthenticated, loading, user } = useContext(AuthContext);
     const [validationResult, setValidationResult] = useState<{ isValid: boolean; message: string } | null>(null);
+    const [credentials, setCredentials] = useState<Credential[] | null>(null);
 	const router = useRouter();
 
     const sidebarItems: SidebarItem[] = [
@@ -173,62 +175,66 @@ const CredentialsPage: React.FC = () => {
         { icon: <Wallet className="w-5 h-5" />, label: 'Wallet Management', href: '#wallet' }
     ];
 
-    const credentials: Credential[] = [
-        {
-        id: '1',
-        title: 'Blockchain Development Certification',
-        issuer: 'BlockAcademy Inc.',
-        date: '2023-10-26',
-        status: 'Verified',
-        credentialId: '0x9e2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9t0t',
-        imageGradient: 'bg-gradient-to-r from-yellow-600 to-orange-600'
-        },
-        {
-        id: '2',
-        title: 'Master of Science in Computer Science',
-        issuer: 'University of Tech',
-        date: '2022-06-15',
-        status: 'Verified',
-        credentialId: '0xabcdef1234567890abcdef1234567890abcdef2',
-        imageUrl: ''
-        },
-        {
-        id: '3',
-        title: 'Data Science Fundamentals',
-        issuer: 'Global Data Institute',
-        date: '2023-01-20',
-        status: 'Verified',
-        credentialId: '0x0ab70e4a210eceaa80904332f0fca832f0ecd8765432',
-        imageGradient: 'bg-gradient-to-r from-yellow-400 to-yellow-600'
-        },
-        {
-        id: '4',
-        title: 'Project Management Professional (PMP)',
-        issuer: 'PMI Global',
-        date: '2024-03-01',
-        status: 'Pending',
-        credentialId: '0x012345f67890abcdef1234567890abcef1234678',
-        imageGradient: 'bg-gradient-to-r from-yellow-500 to-orange-400'
-        },
-        {
-        id: '5',
-        title: 'Introduction to Cybersecurity',
-        issuer: 'CyberSec Academy',
-        date: '2023-11-05',
-        status: 'Verified',
-        credentialId: '0x0efeda087085422fbebd6e9f8524ff7bfe4c2ffbecba009',
-        imageUrl: ''
-        },
-        {
-        id: '6',
-        title: 'Financial Technology Innovation',
-        issuer: 'FinTech Hub',
-        date: '2024-01-10',
-        status: 'Verified',
-        credentialId: '0x0eba8796542f0feca8f76543210ebcda8765',
-        imageUrl: ''
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const credentialsData = async () => {
+            const data = await fetchCredentials(user?.id);
+            setCredentials(data);
         }
-    ];
+        credentialsData();
+    }, [user]);
+
+    // const credentials: Credential[] = [
+    //     {
+    //     title: 'Blockchain Development Certification',
+    //     issuer: 'BlockAcademy Inc.',
+    //     date: '2023-10-26',
+    //     status: 'Verified',
+    //     credentialId: '0x9e2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9t0t',
+    //     imageGradient: 'bg-gradient-to-r from-yellow-600 to-orange-600'
+    //     },
+    //     {
+    //     title: 'Master of Science in Computer Science',
+    //     issuer: 'University of Tech',
+    //     date: '2022-06-15',
+    //     status: 'Verified',
+    //     credentialId: '0xabcdef1234567890abcdef1234567890abcdef2',
+    //     imageUrl: ''
+    //     },
+    //     {
+    //     title: 'Data Science Fundamentals',
+    //     issuer: 'Global Data Institute',
+    //     date: '2023-01-20',
+    //     status: 'Verified',
+    //     credentialId: '0x0ab70e4a210eceaa80904332f0fca832f0ecd8765432',
+    //     imageGradient: 'bg-gradient-to-r from-yellow-400 to-yellow-600'
+    //     },
+    //     {
+    //     title: 'Project Management Professional (PMP)',
+    //     issuer: 'PMI Global',
+    //     date: '2024-03-01',
+    //     status: 'Pending',
+    //     credentialId: '0x012345f67890abcdef1234567890abcef1234678',
+    //     imageGradient: 'bg-gradient-to-r from-yellow-500 to-orange-400'
+    //     },
+    //     {
+    //     title: 'Introduction to Cybersecurity',
+    //     issuer: 'CyberSec Academy',
+    //     date: '2023-11-05',
+    //     status: 'Verified',
+    //     credentialId: '0x0efeda087085422fbebd6e9f8524ff7bfe4c2ffbecba009',
+    //     imageUrl: ''
+    //     },
+    //     {
+    //     title: 'Financial Technology Innovation',
+    //     issuer: 'FinTech Hub',
+    //     date: '2024-01-10',
+    //     status: 'Verified',
+    //     credentialId: '0x0eba8796542f0feca8f76543210ebcda8765',
+    //     imageUrl: ''
+    //     }
+    // ];
 
     const handleView = (id: string) => {
         console.log('View credential:', id);
@@ -294,19 +300,25 @@ const CredentialsPage: React.FC = () => {
                         </p>
                     </div>
 
-                    {/* Credentials Grid */}
-                    <div className="grid md:grid-cols-3 gap-6 mb-12">
-                        {credentials.map((credential) => (
-                            <CredentialCard
-                              key={credential.id}
-                              credential={credential}
-                              onView={handleView}
-                              onShare={handleShare}
-                              onDownload={handleDownload}
-                            />
-                        ))}
-                    </div>
+                    {credentials && (
+                        <div className="grid md:grid-cols-3 gap-6 mb-12">
+                            {credentials.map((credential, index) => (
+                                <CredentialCard
+                                    key={index}
+                                    credential={credential}
+                                    onView={handleView}
+                                    onShare={handleShare}
+                                    onDownload={handleDownload}
+                                />
+                            ))}
+                        </div>
+                    )}
 
+                    {!credentials && (
+                        <div className="grid md:grid-cols-3 gap-6 mb-12">
+                            <h1>No credentials found!!!</h1>
+                        </div>
+                    )}
                     {/* <div className="mb-12">
                         <IssueCredentialForm onSubmit={handleIssueCredential} />
                     </div> */}

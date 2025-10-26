@@ -1,9 +1,8 @@
 export interface Credential {
-    id: string;
     title: string;
     issuer: string;
     date: string;
-    status: 'Verified' | 'Pending';
+    status: 'Verified' | 'Pending' | string;
     credentialId: string;
     imageUrl?: string;
     imageGradient?: string;
