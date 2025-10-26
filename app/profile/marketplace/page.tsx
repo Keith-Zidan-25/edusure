@@ -79,12 +79,12 @@ const RewardCard: React.FC<RewardCardProps> = ({ icon, title, value, description
       <h3 className="text-sm font-semibold text-gray-700 text-center mb-2">{title}</h3>
       <p className="text-4xl font-bold text-blue-600 text-center mb-2">{value}</p>
       <p className="text-xs text-gray-600 text-center mb-4">{description}</p>
-      <button
+      {/* <button
         onClick={onViewAll}
         className="w-full py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-lg transition"
       >
         View All
-      </button>
+      </button> */}
     </div>
   );
 };
@@ -318,7 +318,7 @@ const MarketPlace: React.FC = () => {
                   icon={<Diamond className="w-8 h-8" />}
                   title="Tokens Accumulated"
                   value={rewardStats.tokensAccumulated.toLocaleString()}
-                  description="EduBlock tokens available for redemption."
+                  description="EduSure tokens available for redemption."
                   onViewAll={handleViewAll}
                 />
                 <RewardCard

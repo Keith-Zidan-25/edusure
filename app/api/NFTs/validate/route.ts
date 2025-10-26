@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
         const validateToken = await (await fetch(`${process.env.MIRROR_NODE_API}/tokens/${tokenId}`)).json();
 
         if (validateToken?._status && !validateToken?.admin_key) {
-            return NextResponse.json({ message: validateToken?._status.messages[0], isValid: false }, { status: 200 });
+            return NextResponse.json({ message: validateToken?._status.messages[0].message, isValid: false }, { status: 200 });
         }
         const nftlist = await getNftInfo(hederaAccountId);
 
