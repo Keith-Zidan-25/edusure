@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { 
   Users, 
   MessageSquare, 
@@ -19,31 +19,21 @@ import {
   HelpCircle
 } from 'lucide-react';
 import Image from 'next/image';
-
-// TypeScript Interfaces
-interface Post {
-  id: string;
-  author: {
-    name: string;
-    avatar?: string;
-  };
-  timestamp: string;
-  content: string;
-  imageUrl?: string;
-  likes: number;
-  comments: number;
-}
+import { AuthContext } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface Project {
-  id: string;
-  title: string;
+  _id: string;
+  projectTitle: string;
   description: string;
   tags: string[];
   raised: number;
   goal: number;
   imageUrl?: string;
   imageGradient?: string;
-  fullyFunded?: boolean;
+  hederaAccountId: string;
+  hederaPrivateKey: string;
+  hederaPublicKey: string;
 }
 
 interface Message {
@@ -87,13 +77,6 @@ interface SidebarProps {
   onLogout?: () => void;
 }
 
-interface PostCardProps {
-  post: Post;
-  onLike?: (id: string) => void;
-  onComment?: (id: string) => void;
-  onShare?: (id: string) => void;
-}
-
 interface ProjectCardProps {
   project: Project;
   onFundNow?: (id: string) => void;
@@ -118,7 +101,6 @@ interface MessagesWidgetProps {
   onTaskToggle?: (id: string) => void;
 }
 
-// Sidebar Component
 const Sidebar: React.FC<SidebarProps> = ({ 
   navItems, 
   currentUser, 
@@ -203,7 +185,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 };
 
-// Header Component
 const Header: React.FC<HeaderProps> = ({ onFilter, onCreatePost }) => {
   return (
     <div className="bg-white border-b border-gray-200 p-6 flex items-center justify-between sticky top-0 z-10">
@@ -228,7 +209,6 @@ const Header: React.FC<HeaderProps> = ({ onFilter, onCreatePost }) => {
   );
 };
 
-// Post Input Component
 const PostInput: React.FC<{ onPost?: () => void }> = ({ onPost }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 flex items-center space-x-3">
@@ -247,62 +227,6 @@ const PostInput: React.FC<{ onPost?: () => void }> = ({ onPost }) => {
   );
 };
 
-// Post Card Component
-const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare }) => {
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <div className="flex items-start space-x-3 mb-4">
-        <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
-          {post.author.avatar ? (
-            <Image src={post.author.avatar} alt={post.author.name} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-600">
-              <User className="w-5 h-5" />
-            </div>
-          )}
-        </div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-gray-900">{post.author.name}</h3>
-          <p className="text-sm text-gray-500">{post.timestamp}</p>
-        </div>
-      </div>
-
-      <p className="text-gray-800 mb-4">{post.content}</p>
-
-      {post.imageUrl && (
-        <div className="mb-4 rounded-lg overflow-hidden">
-          <Image src={post.imageUrl} alt="Post content" className="w-full h-48 object-cover" />
-        </div>
-      )}
-
-      <div className="flex items-center space-x-6 pt-4 border-t border-gray-200">
-        <button
-          onClick={() => onLike?.(post.id)}
-          className="flex items-center space-x-2 text-gray-600 hover:text-red-500 transition"
-        >
-          <Heart className="w-5 h-5" />
-          <span className="text-sm font-medium">{post.likes}</span>
-        </button>
-        <button
-          onClick={() => onComment?.(post.id)}
-          className="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition"
-        >
-          <MessageCircle className="w-5 h-5" />
-          <span className="text-sm font-medium">{post.comments}</span>
-        </button>
-        <button
-          onClick={() => onShare?.(post.id)}
-          className="flex items-center space-x-2 text-gray-600 hover:text-green-500 transition"
-        >
-          <Share2 className="w-5 h-5" />
-          <span className="text-sm font-medium">Share</span>
-        </button>
-      </div>
-    </div>
-  );
-};
-
-// Project Card Component
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onFundNow }) => {
   const percentage = (project.raised / project.goal) * 100;
 
@@ -310,14 +234,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onFundNow }) => {
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
       <div className={`h-48 ${project.imageGradient || 'bg-gray-200'} overflow-hidden`}>
         {project.imageUrl ? (
-          <Image src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+          <Image src={project.imageUrl} alt={project.projectTitle} width={300} height={300} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600"></div>
         )}
       </div>
       
       <div className="p-5">
-        <h3 className="text-lg font-bold text-gray-900 mb-2">{project.title}</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-2">{project.projectTitle}</h3>
         <p className="text-sm text-gray-600 mb-4">{project.description}</p>
         
         <div className="flex flex-wrap gap-2 mb-4">
@@ -344,14 +268,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onFundNow }) => {
           </div>
         </div>
 
-        {project.fullyFunded ? (
+        {project.goal === project.raised ? (
           <div className="flex items-center justify-center space-x-2 py-2 text-green-600">
             <CheckCircle className="w-5 h-5" />
             <span className="font-medium">Fully Funded!</span>
           </div>
         ) : (
           <button
-            onClick={() => onFundNow?.(project.id)}
+            onClick={() => onFundNow?.(project._id)}
             className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center space-x-2"
           >
             <DollarSign className="w-4 h-4" />
@@ -363,7 +287,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onFundNow }) => {
   );
 };
 
-// Message Item Component
 const MessageItem: React.FC<MessageItemProps> = ({ message, onClick }) => {
   return (
     <button
@@ -393,7 +316,6 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, onClick }) => {
   );
 };
 
-// Messages Widget Component
 const MessagesWidget: React.FC<MessagesWidgetProps> = ({ 
   messages, 
   trendingPosts,
@@ -413,7 +335,6 @@ const MessagesWidget: React.FC<MessagesWidgetProps> = ({
 
   return (
     <div className="w-80 bg-white border-l border-gray-200 flex flex-col h-screen overflow-y-auto">
-      {/* Messages Section */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-gray-900">Messages</h2>
@@ -432,7 +353,6 @@ const MessagesWidget: React.FC<MessagesWidgetProps> = ({
         </div>
       </div>
 
-      {/* Get Started Section */}
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Get Started</h2>
         <div className="space-y-3">
@@ -457,7 +377,6 @@ const MessagesWidget: React.FC<MessagesWidgetProps> = ({
         </div>
       </div>
 
-      {/* Trending Posts Section */}
       <div className="p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Trending Posts</h2>
         <div className="space-y-3">
@@ -477,7 +396,6 @@ const MessagesWidget: React.FC<MessagesWidgetProps> = ({
         </div>
       </div>
 
-      {/* Message Input */}
       <div className="mt-auto p-4 border-t border-gray-200">
         <div className="flex items-center space-x-2">
           <input
@@ -500,138 +418,21 @@ const MessagesWidget: React.FC<MessagesWidgetProps> = ({
   );
 };
 
-// Main CommunityPage  Component
 const CommunityPage : React.FC = () => {
+  const {isAuthenticated, user, loading} = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = useState<{name: string; avatar: string}>({
+    name: "",
+    avatar: ""
+  });
+  const [projects, setProjects] = useState<{openSourceProjects: Project[]; researchStudies: Project[]} | null>(null);
+  const router = useRouter();
+
   const navItems: NavItem[] = [
     { icon: <Users className="w-5 h-5" />, label: 'Community Posts', href: '#posts', isActive: true },
     { icon: <MessageSquare className="w-5 h-5" />, label: 'Direct Messages', href: '#messages', badge: 3 },
     { icon: <DollarSign className="w-5 h-5" />, label: 'Academic Funding', href: '#funding' }
   ];
-
-  const currentUser = {
-    name: 'Alice Johnson',
-    avatar: ''
-  };
-
-  const recentPosts: Post[] = [
-    {
-      id: '1',
-      author: { name: 'Alice Johnson', avatar: '' },
-      timestamp: '2 hours ago',
-      content: 'Just launched our new community initiative to support local artists! Check out the details and let us know your ideas for collaboration.',
-      imageUrl: '',
-      likes: 45,
-      comments: 12
-    },
-    {
-      id: '2',
-      author: { name: 'Bob Williams', avatar: '' },
-      timestamp: '5 hours ago',
-      content: 'Looking for contributors for our open-source project on sustainable energy solutions. We need help with documentation and front-end development!',
-      imageUrl: '',
-      likes: 30,
-      comments: 7
-    },
-    {
-      id: '3',
-      author: { name: 'Charlie Davis', avatar: '' },
-      timestamp: 'Yesterday',
-      content: 'Excited to share the preliminary findings of our research on community resilience. Your feedback is crucial for the next phase.',
-      imageUrl: '',
-      likes: 68,
-      comments: 25
-    },
-    {
-      id: '4',
-      author: { name: 'Diana Miller', avatar: '' },
-      timestamp: '2 days ago',
-      content: 'Our crowdfunding campaign for "Eco-Friendly Tech" is halfway to its goal! A big thank you to all our early supporters.',
-      imageUrl: '',
-      likes: 88,
-      comments: 18
-    },
-    {
-      id: '5',
-      author: { name: 'Alice Johnson', avatar: '' },
-      timestamp: '3 days ago',
-      content: 'What are your thoughts on integrating AI tools for community moderation? Share your pros and cons!',
-      imageUrl: '',
-      likes: 55,
-      comments: 30
-    },
-    {
-      id: '6',
-      author: { name: 'Bob Williams', avatar: '' },
-      timestamp: '1 week ago',
-      content: 'Celebrating a successful month of growth! Our community now has over 10,000 active members. Thank you for making this such a vibrant place!',
-      imageUrl: '',
-      likes: 120,
-      comments: 40
-    }
-  ];
-
-  const openSourceProjects: Project[] = [
-    {
-      id: '1',
-      title: 'OpenAI Chatbot Integration for NGOs',
-      description: 'A customizable open-source chatbot framework to help NGOs with rapid response and information dissemination.',
-      tags: ['Python', 'TensorFlow', 'React'],
-      raised: 8000,
-      goal: 15000,
-      imageGradient: 'bg-gradient-to-br from-indigo-900 to-purple-900'
-    },
-    {
-      id: '2',
-      title: 'Community Event Management System',
-      description: 'A full-stack Application to streamline the execution of local community events, from registration to feedback collection.',
-      tags: ['Node.js', 'Express', 'MongoDB', 'Angular'],
-      raised: 10000,
-      goal: 10000,
-      fullyFunded: true,
-      imageGradient: 'bg-gradient-to-br from-gray-400 to-gray-600'
-    },
-    {
-      id: '3',
-      title: 'AI-Powered Research Assistant',
-      description: 'An open-source tool leveraging AI and NLP to help students and researchers find relevant sources and data synthesis.',
-      tags: ['Python', 'NLP', 'Research'],
-      raised: 2500,
-      goal: 20000,
-      imageGradient: 'bg-gradient-to-br from-blue-900 to-indigo-900'
-    }
-  ];
-
-  const researchStudies: Project[] = [
-    {
-      id: '4',
-      title: 'Impact of Digital Literacy on Community Engagement',
-      description: 'An extensive research paper exploring how increased digital literacy correlates with higher levels of community involvement.',
-      tags: ['Research', 'Social'],
-      raised: 4500,
-      goal: 8000,
-      imageGradient: 'bg-gradient-to-br from-orange-700 to-red-700'
-    },
-    {
-      id: '5',
-      title: 'Sustainable Urban Farming Practices in Arid Regions',
-      description: 'A study on innovative techniques and technologies for urban farming in areas facing significant water scarcity.',
-      tags: ['Environment', 'Agriculture'],
-      raised: 5000,
-      goal: 5000,
-      fullyFunded: true,
-      imageGradient: 'bg-gradient-to-br from-green-600 to-teal-600'
-    },
-    {
-      id: '6',
-      title: 'Advancements in Renewable Energy Storage Solutions',
-      description: 'A comprehensive review of the latest breakthroughs in battery technologies and energy storage for large-scale Applications.',
-      tags: ['Energy', 'Technology'],
-      raised: 1500,
-      goal: 12000,
-      imageGradient: 'bg-gradient-to-br from-blue-800 to-cyan-800'
-    }
-  ];
-
+  
   const messages: Message[] = [
     {
       id: '1',
@@ -672,18 +473,6 @@ const CommunityPage : React.FC = () => {
     { id: '3', title: 'Excited to share the prel...', author: 'Charlie Davis' }
   ];
 
-  const handleLike = (id: string) => {
-    console.log('Like post:', id);
-  };
-
-  const handleComment = (id: string) => {
-    console.log('Comment on post:', id);
-  };
-
-  const handleShare = (id: string) => {
-    console.log('Share post:', id);
-  };
-
   const handleFundNow = (id: string) => {
     console.log('Fund project:', id);
   };
@@ -720,6 +509,30 @@ const CommunityPage : React.FC = () => {
     console.log('Logout clicked');
   };
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const data = await (await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/projects`)).json();
+      setProjects(data);
+      console.log(data);
+    }
+
+    fetchProjects();
+  },[])
+
+  useEffect(() => {
+    if (loading) return;
+
+    if (!isAuthenticated) {
+      router.replace("/auth");
+    }
+    if (user) {
+      setCurrentUser({
+        name: user?.name,
+        avatar: ""
+      });
+    }
+  }, [isAuthenticated, user, loading, router]);
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar
@@ -734,50 +547,35 @@ const CommunityPage : React.FC = () => {
         <Header onFilter={handleFilter} onCreatePost={handleCreatePost} />
         
         <div className="p-6 max-w-4xl mx-auto">
-          {/* Post Input */}
           <PostInput />
-
-          {/* Recent Posts */}
-          <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Posts</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {recentPosts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                  onShare={handleShare}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* Academic Funding Hub */}
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Academic Funding Hub</h2>
             
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Popular Open Source Projects</h3>
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {openSourceProjects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  onFundNow={handleFundNow}
-                />
-              ))}
-            </div>
+            {projects && (
+              <>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Popular Open Source Projects</h3>
+                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                  {projects.openSourceProjects.map((project) => (
+                    <ProjectCard
+                      key={project._id}
+                      project={project}
+                      onFundNow={handleFundNow}
+                    />
+                  ))}
+                </div>
 
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Latest Research Studies</h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              {researchStudies.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  onFundNow={handleFundNow}
-                />
-              ))}
-            </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Latest Research Studies</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {projects.researchStudies.map((project) => (
+                    <ProjectCard
+                      key={project._id}
+                      project={project}
+                      onFundNow={handleFundNow}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </section>
         </div>
       </main>
@@ -794,4 +592,4 @@ const CommunityPage : React.FC = () => {
   );
 };
 
-export default CommunityPage ;
+export default CommunityPage;
