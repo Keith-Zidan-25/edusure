@@ -23,7 +23,7 @@ import {
 } from '@/utils/types/credentials';
 import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { fetchCredentials } from '@/services/credentials.service';
+import { fetchCredentials, validateCredentials } from '@/services/credentials.service';
 
 
 interface SidebarItem {
@@ -108,9 +108,13 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
 
 const CredentialValidator: React.FC<ValidatorProps> = ({ onValidate, validationResult }) => {
   	const [hash, setHash] = useState('');
+    const [processing, setProcessing] = useState<boolean>(false);
 
   	const handleValidate = () => {
+        setProcessing(true);
     	onValidate?.(hash);
+        setProcessing(false);
+        setHash("");
   	};
 
   	return (
@@ -133,8 +137,9 @@ const CredentialValidator: React.FC<ValidatorProps> = ({ onValidate, validationR
 					className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 				/>
 				<button
+                    disabled={processing}
 					onClick={handleValidate}
-					className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center space-x-2"
+					className= {`${!processing ? "bg-blue-600 text-white": "bg-gray-700 text-black"} px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center space-x-2`}
 				>
 					<CheckCircle className="w-5 h-5" />
 					<span>Validate</span>
@@ -185,57 +190,6 @@ const CredentialsPage: React.FC = () => {
         credentialsData();
     }, [user]);
 
-    // const credentials: Credential[] = [
-    //     {
-    //     title: 'Blockchain Development Certification',
-    //     issuer: 'BlockAcademy Inc.',
-    //     date: '2023-10-26',
-    //     status: 'Verified',
-    //     credentialId: '0x9e2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9t0t',
-    //     imageGradient: 'bg-gradient-to-r from-yellow-600 to-orange-600'
-    //     },
-    //     {
-    //     title: 'Master of Science in Computer Science',
-    //     issuer: 'University of Tech',
-    //     date: '2022-06-15',
-    //     status: 'Verified',
-    //     credentialId: '0xabcdef1234567890abcdef1234567890abcdef2',
-    //     imageUrl: ''
-    //     },
-    //     {
-    //     title: 'Data Science Fundamentals',
-    //     issuer: 'Global Data Institute',
-    //     date: '2023-01-20',
-    //     status: 'Verified',
-    //     credentialId: '0x0ab70e4a210eceaa80904332f0fca832f0ecd8765432',
-    //     imageGradient: 'bg-gradient-to-r from-yellow-400 to-yellow-600'
-    //     },
-    //     {
-    //     title: 'Project Management Professional (PMP)',
-    //     issuer: 'PMI Global',
-    //     date: '2024-03-01',
-    //     status: 'Pending',
-    //     credentialId: '0x012345f67890abcdef1234567890abcef1234678',
-    //     imageGradient: 'bg-gradient-to-r from-yellow-500 to-orange-400'
-    //     },
-    //     {
-    //     title: 'Introduction to Cybersecurity',
-    //     issuer: 'CyberSec Academy',
-    //     date: '2023-11-05',
-    //     status: 'Verified',
-    //     credentialId: '0x0efeda087085422fbebd6e9f8524ff7bfe4c2ffbecba009',
-    //     imageUrl: ''
-    //     },
-    //     {
-    //     title: 'Financial Technology Innovation',
-    //     issuer: 'FinTech Hub',
-    //     date: '2024-01-10',
-    //     status: 'Verified',
-    //     credentialId: '0x0eba8796542f0feca8f76543210ebcda8765',
-    //     imageUrl: ''
-    //     }
-    // ];
-
     const handleView = (id: string) => {
         console.log('View credential:', id);
     };
@@ -252,26 +206,26 @@ const CredentialsPage: React.FC = () => {
     //     console.log('Issue credential:', data);
     // };
 
-    const handleValidate = (hash: string) => {
-        console.log('Validate credential:', hash);
+    const handleValidate = async (tokenId: string) => {
+        const response = await validateCredentials(user?.hederaAccountId, tokenId);
         setValidationResult({
-        	isValid: true,
-        	message: 'Credential verified successfully on the blockchain!'
+        	isValid: response.isValid,
+        	message: response.message
         });
     };
 
     const footerLinks = {
         company: [
-        { href: '#about', label: 'About' },
-        { href: '#contact', label: 'Contact' }
+            { href: '#about', label: 'About' },
+            { href: '#contact', label: 'Contact' }
         ],
         resources: [
-        { href: '#docs', label: 'Documentation' },
-        { href: '#help', label: 'Help' }
+            { href: '#docs', label: 'Documentation' },
+            { href: '#help', label: 'Help' }
         ],
         legal: [
-        { href: '#privacy', label: 'Privacy' },
-        { href: '#terms', label: 'Terms' }
+            { href: '#privacy', label: 'Privacy' },
+            { href: '#terms', label: 'Terms' }
         ]
     };
 
@@ -285,52 +239,52 @@ const CredentialsPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-        <Header />
+            <Header />
         
-        <div className="flex">
-            <Sidebar items={sidebarItems} settingsItems={settingsItems} />
-            
-            <main className="flex-1 p-8">
-                <div className="max-w-7xl mx-auto">
-                    <div className="mb-8">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-3">My Credentials</h1>
-                        <p className="text-gray-600">
-                            View, share, and download your verifiable blockchain certificates, diplomas, and transcripts. 
-                            Each credential is tamper-proof and secured on the EduBlock network.
-                        </p>
+            <div className="flex">
+                <Sidebar items={sidebarItems} settingsItems={settingsItems} />
+                
+                <main className="flex-1 p-8">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="mb-8">
+                            <h1 className="text-4xl font-bold text-gray-900 mb-3">My Credentials</h1>
+                            <p className="text-gray-600">
+                                View, share, and download your verifiable blockchain certificates, diplomas, and transcripts. 
+                                Each credential is tamper-proof and secured on the EduBlock network.
+                            </p>
+                        </div>
+
+                        {credentials && (
+                            <div className="grid md:grid-cols-3 gap-6 mb-12">
+                                {credentials.map((credential, index) => (
+                                    <CredentialCard
+                                        key={index}
+                                        credential={credential}
+                                        onView={handleView}
+                                        onShare={handleShare}
+                                        onDownload={handleDownload}
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        {!credentials && (
+                            <div className="grid md:grid-cols-3 gap-6 mb-12">
+                                <h1>No credentials found!!!</h1>
+                            </div>
+                        )}
+                        {/* <div className="mb-12">
+                            <IssueCredentialForm onSubmit={handleIssueCredential} />
+                        </div> */}
+
+                        <CredentialValidator 
+                            onValidate={handleValidate}
+                            validationResult={validationResult}
+                        />
                     </div>
-
-                    {credentials && (
-                        <div className="grid md:grid-cols-3 gap-6 mb-12">
-                            {credentials.map((credential, index) => (
-                                <CredentialCard
-                                    key={index}
-                                    credential={credential}
-                                    onView={handleView}
-                                    onShare={handleShare}
-                                    onDownload={handleDownload}
-                                />
-                            ))}
-                        </div>
-                    )}
-
-                    {!credentials && (
-                        <div className="grid md:grid-cols-3 gap-6 mb-12">
-                            <h1>No credentials found!!!</h1>
-                        </div>
-                    )}
-                    {/* <div className="mb-12">
-                        <IssueCredentialForm onSubmit={handleIssueCredential} />
-                    </div> */}
-
-                    <CredentialValidator 
-                        onValidate={handleValidate}
-                        validationResult={validationResult}
-                    />
-                </div>
-            </main>
-        </div>
-        
+                </main>
+            </div>
+            
             <Footer links={footerLinks} socialLinks={{ facebook: '#', twitter: '#', linkedin: '#' }} />
         </div>
     );

@@ -32,3 +32,13 @@ interface ValidatorProps {
         message: string;
     } | null;
 }
+
+export interface NFTInfo {
+    created_timestamp: string;
+    metadata: string;
+    token_id: string;
+    serial_number: number;
+    account_id: string;
+    deleted: boolean;
+    spender_id: string | null;
+}

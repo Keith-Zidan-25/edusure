@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/database";
-import { AccountId } from "@hashgraph/sdk";
+import { getNftInfo } from "@/utils/functions/NFTFunctions";
 import { User } from "@/model/User";
 import { Credential } from "@/utils/types/credentials";
 import moment from "moment";
-
-interface NFTInfo {
-    created_timestamp: string;
-    metadata: string;
-    token_id: string;
-    serial_number: number;
-    account_id: string;
-    deleted: boolean;
-    spender_id: string | null;
-}
+import { NFTInfo } from "@/utils/types/credentials";
 
 async function dataCleaner(nftInfos: NFTInfo[]) {
     const cleanedData: Credential[] = [];
@@ -49,23 +40,6 @@ async function dataCleaner(nftInfos: NFTInfo[]) {
     }
 
     return cleanedData;
-}
-
-async function getNftInfo(accountId: string | AccountId) {
-    const nftInfo = await fetch(`${process.env.MIRROR_NODE_API}/accounts/${accountId}/nfts?limit=100`, { method: "GET" });
-    const nftInfoJson = await nftInfo.json();
-    const nftInfos = [...nftInfoJson.nfts];
-    let nextLink = nftInfoJson.links.next;
-    
-    while (nextLink !== null) {
-        const nextNftInfo = await fetch(`${process.env.MIRROR_NODE_API}${nextLink}`, { method: "GET" });
-        const nextNftInfoJson = await nextNftInfo.json();
-        
-        nftInfos.push(...nextNftInfoJson.nfts);
-        nextLink = nextNftInfoJson.links.next;
-    }
-    
-    return nftInfos;
 }
 
 export async function GET(request: NextRequest, { params }: { params: { userId: string }}) {

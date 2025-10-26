@@ -8,9 +8,8 @@ import {
   Settings, 
   Wallet, 
   UserPlus,
-  Shield,
-  CreditCard,
   BookOpen,
+  LogOut,
 } from 'lucide-react';
 import Header from '@/components/SignedInHeader';
 import Footer from '@/components/Footer';
@@ -140,7 +139,8 @@ const Dashboard: React.FC = () => {
 
   const settingsItems: SidebarItem[] = [
     { icon: <Settings className="w-5 h-5" />, label: 'Account Settings', href: '#settings' },
-    { icon: <Wallet className="w-5 h-5" />, label: 'Wallet Management', href: '#wallet' }
+    { icon: <Wallet className="w-5 h-5" />, label: 'Wallet Management', href: '#wallet' },
+    { icon: <LogOut className='w-5 h-5 text-red-200' />, label: "Logout", href: "/profile/logout"}
   ];
 
   const progressSteps = [
@@ -148,33 +148,6 @@ const Dashboard: React.FC = () => {
     { label: 'Identity Verification', completed: true },
     { label: 'Wallet Connection', completed: true }
   ];
-
-  // const onboardingSteps: OnboardingStep[] = [
-  //   {
-  //     id: 'profile',
-  //     icon: <UserPlus className="w-6 h-6 text-blue-600" />,
-  //     title: 'Complete Your Profile',
-  //     description: 'Personalize your EduBlock experience by adding your academic history and professional details.',
-  //     buttonText: 'Start Setup',
-  //     onClick: () => console.log('Start profile setup')
-  //   },
-  //   {
-  //     id: 'verify',
-  //     icon: <Shield className="w-6 h-6 text-blue-600" />,
-  //     title: 'Verify Your Identity',
-  //     description: 'Secure your account and unlock advanced features by completing our identity verification process.',
-  //     buttonText: 'Verify Now',
-  //     onClick: () => console.log('Start verification')
-  //   },
-  //   {
-  //     id: 'wallet',
-  //     icon: <CreditCard className="w-6 h-6 text-blue-600" />,
-  //     title: 'Connect Your Wallet',
-  //     description: 'Link your blockchain wallet to manage credentials and participate in the tokenized ecosystem.',
-  //     buttonText: 'Connect Wallet',
-  //     onClick: () => console.log('Connect wallet')
-  //   }
-  // ];
 
   const nextStepsCards: NextStepCard[] = [
     {
