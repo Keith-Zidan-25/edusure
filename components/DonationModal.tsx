@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
 import { X, Heart, TrendingUp } from 'lucide-react';
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl?: string;
-  imageGradient?: string;
-  raised: number;
-  goal: number;
-}
+import { Project } from '@/utils/types/community';
 
 interface DonationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  project: Project;
-  onDonate?: (amount: number) => void;
+  project: Project | undefined;
+  onDonate?: (amount: number, id: string) => void;
 }
 
 const DonationModal: React.FC<DonationModalProps> = ({
@@ -25,13 +16,14 @@ const DonationModal: React.FC<DonationModalProps> = ({
   onDonate
 }) => {
   const [amount, setAmount] = useState('');
-
+  
+  if (project === undefined) return null;
   const progress = (project.raised / project.goal) * 100;
 
   const handleDonate = () => {
     const donationAmount = parseFloat(amount);
     if (donationAmount > 0) {
-      onDonate?.(donationAmount);
+      onDonate?.(donationAmount, project._id);
       setAmount('');
       onClose();
     }
@@ -57,7 +49,7 @@ const DonationModal: React.FC<DonationModalProps> = ({
           <div className="mb-6">
             <div className={`w-full h-48 rounded-lg overflow-hidden mb-4 ${project.imageGradient || 'bg-gradient-to-br from-blue-500 to-purple-600'}`}>
               {project.imageUrl ? (
-                <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                <img src={project.imageUrl} alt={project.projectTitle} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-white">
                   <Heart className="w-16 h-16" />
@@ -65,7 +57,7 @@ const DonationModal: React.FC<DonationModalProps> = ({
               )}
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 mb-2">{project.title}</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{project.projectTitle}</h3>
             <p className="text-sm text-gray-600 mb-4">{project.description}</p>
 
             <div>

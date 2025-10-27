@@ -11,9 +11,6 @@ import {
   Settings,
   LogOut,
   Send,
-  Heart,
-  MessageCircle,
-  Share2,
   CheckCircle,
   ArrowRight,
   HelpCircle
@@ -21,20 +18,10 @@ import {
 import Image from 'next/image';
 import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-
-interface Project {
-  _id: string;
-  projectTitle: string;
-  description: string;
-  tags: string[];
-  raised: number;
-  goal: number;
-  imageUrl?: string;
-  imageGradient?: string;
-  hederaAccountId: string;
-  hederaPrivateKey: string;
-  hederaPublicKey: string;
-}
+import DonationModal from '@/components/DonationModal';
+import { ToastContainer } from 'react-toastify';
+import { Project } from '@/utils/types/community';
+import { fetchProjects, donateToProject } from '@/services/project.services';
 
 interface Message {
   id: string;
@@ -419,12 +406,15 @@ const MessagesWidget: React.FC<MessagesWidgetProps> = ({
 };
 
 const CommunityPage : React.FC = () => {
-  const {isAuthenticated, user, loading} = useContext(AuthContext);
+  const {isAuthenticated, user, loading, logout} = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState<{name: string; avatar: string}>({
     name: "",
     avatar: ""
   });
   const [projects, setProjects] = useState<{openSourceProjects: Project[]; researchStudies: Project[]} | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project>();
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+
   const router = useRouter();
 
   const navItems: NavItem[] = [
@@ -474,7 +464,18 @@ const CommunityPage : React.FC = () => {
   ];
 
   const handleFundNow = (id: string) => {
-    console.log('Fund project:', id);
+    let project = projects?.openSourceProjects.find((project) => project._id === id);
+    
+    if (!project) {
+      project = projects?.researchStudies.find((project) => project._id === id);
+    }
+    
+    if (typeof project != undefined) {
+      setSelectedProject(project);
+      setModalOpen(true);
+    } else {
+      alert("Project cannot be accessed");
+    }
   };
 
   const handleFilter = () => {
@@ -506,17 +507,21 @@ const CommunityPage : React.FC = () => {
   };
 
   const handleLogout = () => {
-    console.log('Logout clicked');
+    logout()
   };
 
+  const handleDonate = async (amount: number, id: string) => {
+    await donateToProject(amount, id, user?.hederaAccountId);
+  } 
+
   useEffect(() => {
-    const fetchProjects = async () => {
-      const data = await (await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/projects`)).json();
+    const getProjects = async () => {
+      const data = await fetchProjects();
       setProjects(data);
       console.log(data);
     }
 
-    fetchProjects();
+    getProjects();
   },[])
 
   useEffect(() => {
@@ -588,6 +593,13 @@ const CommunityPage : React.FC = () => {
         onSendMessage={handleSendMessage}
         onTaskToggle={handleTaskToggle}
       />
+      <DonationModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onDonate={handleDonate}
+        project={selectedProject} 
+      />
+      <ToastContainer position="bottom-right" />
     </div>
   );
 };
