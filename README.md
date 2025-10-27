@@ -1,7 +1,3 @@
-Here’s a polished project description for your README.md on GitHub, summarizing your all-in-one blockchain-based education platform (excluding e-transcripts):
-
-***
-
 # Ultimate Blockchain-Based Education Platform
 
 This project is a comprehensive, next-generation web application that leverages blockchain technology to modernize and streamline educational credentialing, recognition, and engagement. Designed for students, educators, institutions, and employers, the platform creates a secure, transparent, and globally interoperable ecosystem for academic and skill-based achievements.
