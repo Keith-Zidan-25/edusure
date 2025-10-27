@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Heart, TrendingUp } from 'lucide-react';
-import { Project } from '@/utils/types/community';
+import { Project } from '../utils/types/community';
 
 interface DonationModalProps {
   isOpen: boolean;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { AccountCreateTransaction, PrivateKey, Hbar } from "@hashgraph/sdk";
-import environmentSetup from "@/lib/client";
+import environmentSetup from "../../../lib/client";
 
 export async function GET() {
     try {

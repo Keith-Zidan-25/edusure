@@ -3,8 +3,8 @@
 import React from 'react';
 import { Shield, User, Globe, GraduationCap, Lock, Wallet } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import { useRouter } from 'next/navigation';
 
 interface ValueCardProps {

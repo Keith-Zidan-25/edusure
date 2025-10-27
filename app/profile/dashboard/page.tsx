@@ -11,12 +11,12 @@ import {
   BookOpen,
   LogOut,
 } from 'lucide-react';
-import Header from '@/components/SignedInHeader';
-import Footer from '@/components/Footer';
-import Sidebar from '@/components/Sidebar';
-import { AuthContext } from '@/context/AuthContext';
+import Header from '../../../components/SignedInHeader';
+import Footer from '../../../components/Footer';
+import Sidebar from '../../../components/Sidebar';
+import { AuthContext } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { SidebarItem } from '@/utils/types/components';
+import { SidebarItem } from '../../../utils/types/components';
 
 // interface OnboardingStep {
 //   id: string;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { SignUpFormData, SignUpFormProps } from "@/utils/types/auth";
+import { SignUpFormData, SignUpFormProps } from "../utils/types/auth";
 
 interface SocialButtonProps {
   provider: 'google' | 'linkedin';

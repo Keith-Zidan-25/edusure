@@ -1,4 +1,4 @@
-import { AxiosHelper } from "@/utils/Axioshelpers";
+import { AxiosHelper } from "../utils/Axioshelpers";
 
 const {sendRequest} = AxiosHelper();
 

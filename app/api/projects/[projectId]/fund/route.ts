@@ -3,13 +3,11 @@ import {
     PrivateKey,
     ContractExecuteTransaction,
     ContractFunctionParameters,
-    BatchTransaction,
-    TransactionReceiptQuery,
     Client,
     AccountId
 } from "@hashgraph/sdk";
-import { User } from "@/model/User";
-import { Project } from "@/model/Project";
+import { User } from "../../../../../model/User";
+import { Project } from "../../../../../model/Project";
 
 const contractId = process.env.CONTRACT_ID;
 

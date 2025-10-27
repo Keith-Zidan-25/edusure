@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getNftInfo } from "@/utils/functions/NFTFunctions";
-import { NFTInfo } from "@/utils/types/credentials";
+import { getNftInfo } from "../../../../utils/functions/NFTFunctions";
+import { NFTInfo } from "../../../../utils/types/credentials";
 
 async function findNFTinList(nfts: NFTInfo[], tokenId: string) {
     for (const nft of nfts) {

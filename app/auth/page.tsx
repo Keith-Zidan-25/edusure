@@ -2,11 +2,11 @@
 
 import React, { useContext, useEffect } from 'react';
 import { Shield, Users, Globe } from 'lucide-react';
-import SignUpForm from '@/components/AuthForm';
+import SignUpForm from '../../components/AuthForm';
 import { toast, ToastContainer } from 'react-toastify';
 import Image from 'next/image';
-import { AuthContext } from '@/context/AuthContext';
-import { SignUpFormData } from "@/utils/types/auth";
+import { AuthContext } from '../../context/AuthContext';
+import { SignUpFormData } from "../../utils/types/auth";
 import { useRouter } from 'next/navigation';
 
 interface FeatureItemProps {

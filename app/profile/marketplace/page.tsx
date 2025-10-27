@@ -13,14 +13,13 @@ import {
   DollarSign,
   BookOpen,
 } from 'lucide-react';
-import Sidebar from '@/components/Sidebar';
-import Header from '@/components/SignedInHeader';
-import Footer from '@/components/Footer';
+import Sidebar from '../../../components/Sidebar';
+import Header from '../../../components/SignedInHeader';
+import Footer from '../../../components/Footer';
 import Image from 'next/image';
-import { AuthContext } from '@/context/AuthContext';
+import { AuthContext } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
-// TypeScript Interfaces
 interface RewardStats {
   badgesEarned: number;
   tokensAccumulated: number;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Award } from "lucide-react";
-import { IssueCredentialFormData, IssueCredentialFormProps } from "@/utils/types/credentials";
+import { IssueCredentialFormData, IssueCredentialFormProps } from "../utils/types/credentials";
 
 const IssueCredentialForm: React.FC<IssueCredentialFormProps> = ({ onSubmit }) => {
     const [formData, setFormData] = useState<IssueCredentialFormData>({

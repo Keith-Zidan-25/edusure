@@ -16,12 +16,12 @@ import {
   HelpCircle
 } from 'lucide-react';
 import Image from 'next/image';
-import { AuthContext } from '@/context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import DonationModal from '@/components/DonationModal';
+import DonationModal from '../../components/DonationModal';
 import { ToastContainer } from 'react-toastify';
-import { Project } from '@/utils/types/community';
-import { fetchProjects, donateToProject } from '@/services/project.services';
+import { Project } from '../../utils/types/community';
+import { fetchProjects, donateToProject } from '../../services/project.services';
 
 interface Message {
   id: string;

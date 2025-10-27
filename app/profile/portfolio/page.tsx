@@ -13,11 +13,11 @@ import {
   Share2,
   Clock,
 } from 'lucide-react';
-import Sidebar from '@/components/Sidebar';
-import Footer from '@/components/Footer';
-import Header from '@/components/SignedInHeader';
-import { AuthContext } from '@/context/AuthContext';
-import { SidebarItem } from '@/utils/types/components';
+import Sidebar from '../../../components/Sidebar';
+import Footer from '../../../components/Footer';
+import Header from '../../../components/SignedInHeader';
+import { AuthContext } from '../../../context/AuthContext';
+import { SidebarItem } from '../../../utils/types/components';
 import { useRouter } from 'next/navigation';
 
 interface ProfileOverview {

@@ -14,16 +14,16 @@ import {
   CheckCircle,
   Clock,
 } from 'lucide-react';
-import Header from '@/components/SignedInHeader';
-import Sidebar from '@/components/Sidebar';
-import Footer from '@/components/Footer';
+import Header from '../../../components/SignedInHeader';
+import Sidebar from '../../../components/Sidebar';
+import Footer from '../../../components/Footer';
 import Image from 'next/image';
 import { 
 	Credential, CredentialCardProps, ValidatorProps 
-} from '@/utils/types/credentials';
-import { AuthContext } from '@/context/AuthContext';
+} from '../../../utils/types/credentials';
+import { AuthContext } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { fetchCredentials, validateCredentials } from '@/services/credentials.service';
+import { fetchCredentials, validateCredentials } from '../../../services/credentials.service';
 
 
 interface SidebarItem {

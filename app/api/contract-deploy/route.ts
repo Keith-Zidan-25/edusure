@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { metadata } from "@/model/SmartContractMetadata";
-import environmentSetup from "@/lib/client";
+import { metadata } from "../../../model/SmartContractMetadata";
+import environmentSetup from "../../../lib/client";
 import { ContractCreateFlow } from "@hashgraph/sdk";
 import fs from 'fs';
 

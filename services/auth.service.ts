@@ -1,5 +1,5 @@
-import { AxiosHelper } from "@/utils/Axioshelpers"
-import { SignUpFormData } from "@/utils/types/auth";
+import { AxiosHelper } from "../utils/Axioshelpers"
+import { SignUpFormData } from "../utils/types/auth";
 
 const {sendRequest} = AxiosHelper();
 

@@ -1,9 +1,9 @@
 "use client";
 
 import { createContext, useState, useEffect } from "react";
-import { loginService, registerService } from "@/services/auth.service";
-import { TUser } from "@/utils/types/user";
-import { SignUpFormData, TAuthContext } from "@/utils/types/auth";
+import { loginService, registerService } from "../services/auth.service";
+import { TUser } from "../utils/types/user";
+import { SignUpFormData, TAuthContext } from "../utils/types/auth";
 
 export const AuthContext = createContext<TAuthContext>({
     isAuthenticated: false,

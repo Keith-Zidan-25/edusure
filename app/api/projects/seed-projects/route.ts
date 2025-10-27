@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { Project } from '@/model/Project';
-import { dbConnect } from "@/lib/database";
+import { Project } from '../../../../model/Project';
+import { dbConnect } from "../../../../lib/database";
 import { ContractFunctionParameters, ContractExecuteTransaction, AccountId, AccountInfoQuery } from "@hashgraph/sdk";
-import environmentSetup from "@/lib/client";
+import environmentSetup from "../../../../lib/client";
 
 const openSourceProjects = [
   {

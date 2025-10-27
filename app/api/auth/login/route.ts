@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbConnect } from "@/lib/database";
-import { User } from "@/model/User";
+import { dbConnect } from "../../../../lib/database";
+import { User } from "../../../../model/User";
 
 await dbConnect();
 //SignIn function

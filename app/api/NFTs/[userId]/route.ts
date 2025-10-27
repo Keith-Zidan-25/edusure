@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbConnect } from "@/lib/database";
-import { getNftInfo } from "@/utils/functions/NFTFunctions";
-import { User } from "@/model/User";
-import { Credential } from "@/utils/types/credentials";
+import { dbConnect } from "../../../../lib/database";
+import { getNftInfo } from "../../../../utils/functions/NFTFunctions";
+import { User } from "../../../../model/User";
+import { Credential } from "../../../../utils/types/credentials";
 import moment from "moment";
-import { NFTInfo } from "@/utils/types/credentials";
+import { NFTInfo } from "../../../../utils/types/credentials";
 
 async function dataCleaner(nftInfos: NFTInfo[]) {
     const cleanedData: Credential[] = [];
