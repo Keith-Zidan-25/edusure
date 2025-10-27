@@ -45,7 +45,7 @@ async function transferToContract(
     return true;
 }
 
-export async function POST(request: NextRequest, {params}: { params: { projectId: string } }) {
+export async function POST(request: NextRequest, {params}: { params: Promise<{ projectId: string }> }) {
     try {
         const {projectId} = await params;
         const {amount, hederaAccountId} = await request.json();

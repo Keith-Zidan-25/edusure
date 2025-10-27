@@ -42,7 +42,7 @@ async function dataCleaner(nftInfos: NFTInfo[]) {
     return cleanedData;
 }
 
-export async function GET(request: NextRequest, { params }: { params: { userId: string }}) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
     try {
         await dbConnect();
         const { userId } = await params;
